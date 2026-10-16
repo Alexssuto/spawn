@@ -142,6 +142,9 @@ class IngestionRun(Base):
     inserted: Mapped[int] = mapped_column(Integer, server_default=text("0"))
     updated: Mapped[int] = mapped_column(Integer, server_default=text("0"))
     unchanged: Mapped[int] = mapped_column(Integer, server_default=text("0"))
+    # Filtered out on purpose (online, council meeting, already ended): not a data problem.
+    skipped: Mapped[int] = mapped_column(Integer, server_default=text("0"))
+    # Invalid rows (no coordinates, outside Montréal, unknown category...): a data problem.
     rejected: Mapped[int] = mapped_column(Integer, server_default=text("0"))
     deactivated: Mapped[int] = mapped_column(Integer, server_default=text("0"))
     # A sample of rejected rows with the reason, plus the error message if the run failed.

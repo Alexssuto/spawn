@@ -92,6 +92,7 @@ def upgrade() -> None:
         sa.Column("inserted", sa.Integer(), server_default=sa.text("0"), nullable=False),
         sa.Column("updated", sa.Integer(), server_default=sa.text("0"), nullable=False),
         sa.Column("unchanged", sa.Integer(), server_default=sa.text("0"), nullable=False),
+        sa.Column("skipped", sa.Integer(), server_default=sa.text("0"), nullable=False),
         sa.Column("rejected", sa.Integer(), server_default=sa.text("0"), nullable=False),
         sa.Column("deactivated", sa.Integer(), server_default=sa.text("0"), nullable=False),
         sa.Column(
