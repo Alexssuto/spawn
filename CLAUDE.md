@@ -25,3 +25,13 @@ Before saying a change is done, run lint, typecheck and tests. CI (`.github/work
 - Small commits, each describing one change.
 - The GitHub repository is **private**. Never change its visibility, deploy publicly, or commit secrets (`.env` files are gitignored).
 - The owner is learning from this project: explain non-obvious changes in the PR description so they can be understood, not just merged.
+- Stories labeled `copilot-practice` in `docs/roadmap.md` are for the owner to write. Review them; don't implement them unless asked.
+
+## Keeping notes (always)
+
+The owner needs to explain this project in technical interviews. After every meaningful change:
+
+- **New technical decision** → add an ADR in `docs/decisions/` (Context, Decision, Alternatives, Consequences) and list it in `docs/decisions/README.md`.
+- **End of a phase or notable change** → update `docs/interview-notes.md`: what was built, why, likely interview questions with plain answers, and a checklist of concepts to understand.
+- **AI involvement** → add a row to `docs/ai-assisted-development.md` saying what Claude Code did and what was verified.
+- **Technology status** must stay honest: built vs designed vs planned vs not used. Never describe planned work as done, and never invent metrics.

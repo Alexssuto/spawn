@@ -134,6 +134,18 @@ This project is built with **Claude Code** and **GitHub Copilot** as tools, with
 - [ ] Kafka ingestion pipeline as a separate learning project
 - [ ] Map tiles from a provider that allows production use (OpenStreetMap's servers are for development only)
 
+Details: [docs/roadmap.md](docs/roadmap.md) (tracked in Jira) and the [Phase 2a backend design](docs/architecture/phase-2a-backend.md).
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [docs/architecture/](docs/architecture/) | System design for each phase |
+| [docs/decisions/](docs/decisions/README.md) | Architecture decision records (why each choice was made) |
+| [docs/roadmap.md](docs/roadmap.md) | Epics and stories, with a CSV for Jira import |
+| [docs/ai-assisted-development.md](docs/ai-assisted-development.md) | What Claude Code and Copilot were used for |
+| [docs/interview-notes.md](docs/interview-notes.md) | Technical decisions explained, phase by phase |
+
 ## Technology status
 
 | Technology | Status |
