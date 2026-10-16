@@ -16,6 +16,12 @@ export interface Spawn {
   hidden?: boolean
   /** Shown instead of a countdown for things that happen on a schedule. */
   recurring?: string
+  /** Real events from the city's calendar have dates but no times. */
+  allDay?: boolean
+  /** Page with full details at the source. */
+  url?: string
+  /** Data source slug, e.g. "montreal-events". Absent for the built-in sample data. */
+  source?: string
 }
 
 interface SeedSpawn extends Omit<Spawn, 'startsAt' | 'endsAt'> {
