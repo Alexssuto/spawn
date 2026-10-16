@@ -19,9 +19,6 @@ config.set_main_option("sqlalchemy.url", str(get_settings().database_url))
 
 target_metadata = Base.metadata
 
-# Tables PostGIS creates itself; they are not ours to manage.
-POSTGIS_TABLES = {"spatial_ref_sys"}
-
 
 def include_object(
     obj: Any,
@@ -30,7 +27,14 @@ def include_object(
     reflected: bool,
     compare_to: Any,
 ) -> bool:
-    if type_ == "table" and name in POSTGIS_TABLES:
+    """Only manage tables our models declare.
+
+    The postgis/postgis image also installs the TIGER geocoder and topology extensions, whose
+    dozens of tables (zip_lookup, featnames, topology...) are on the search path. Without this,
+    autogenerate and `alembic check` would want to drop them.
+    """
+    table_name = name if type_ == "table" else getattr(getattr(obj, "table", None), "name", None)
+    if reflected and table_name not in target_metadata.tables:
         return False
     return bool(alembic_helpers.include_object(obj, name, type_, reflected, compare_to))
 
