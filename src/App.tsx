@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { TYPES, type ExperienceType } from './data/catalog'
-import { loadSpawns, type Spawn } from './data/spawns'
+import type { Spawn } from './data/spawns'
 import { useCollection } from './hooks/useCollection'
 import { useLocation } from './hooks/useLocation'
 import { useNow } from './hooks/useNow'
+import { useSpawns } from './hooks/useSpawns'
 import { sortViews, viewSpawn } from './lib/spawnView'
 import { MapView } from './components/MapView'
 import { SpawnCard } from './components/SpawnCard'
@@ -13,8 +14,12 @@ import { DexView } from './components/DexView'
 
 type Tab = 'map' | 'nearby' | 'dex'
 
+// Required by the CC BY 4.0 license of the city's events data.
+const MONTREAL_OPEN_DATA_ATTRIBUTION =
+  'Events: <a href="https://donnees.montreal.ca/dataset/evenements-publics">Ville de Montréal</a> (CC BY 4.0)'
+
 export default function App() {
-  const [spawns] = useState(() => loadSpawns())
+  const { spawns, source: dataSource } = useSpawns()
   const now = useNow()
   const { position, source, gpsAvailable, teleport, followGps } = useLocation()
   const { catches, add, has, reset } = useCollection()
@@ -51,6 +56,12 @@ export default function App() {
           <span className="brand-mark">◉</span> Spawn
         </div>
         <div className="topbar-right">
+          <span
+            className={`chip ${dataSource.kind === 'api' ? 'chip-gps' : ''}`}
+            title={dataSource.kind === 'demo' ? dataSource.reason : 'Events from the Spawn API'}
+          >
+            {dataSource.kind === 'api' ? '🛰️ Real' : dataSource.kind === 'demo' ? '🧪 Sample' : '…'}
+          </span>
           <span className="chip chip-live">
             <span className="live-dot" />
             {liveCount} live
@@ -92,6 +103,7 @@ export default function App() {
               me={position}
               now={now}
               selectedId={selectedId}
+              dataAttribution={dataSource.kind === 'api' ? MONTREAL_OPEN_DATA_ATTRIBUTION : undefined}
               onSelect={setSelectedId}
               onTeleport={(p) => {
                 setSelectedId(null)
