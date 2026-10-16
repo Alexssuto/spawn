@@ -24,6 +24,7 @@ Spawn is developed with two AI tools that do different jobs. This page records w
 | Ingestion | Pydantic validation, cleaning, category mapping, idempotent upsert, deactivation, snapshot guard, CLI, 26-row real fixture | Unit tests + integration tests on PostGIS; parser run on the full file (PR #5) |
 | REST API | Nearby query with PostGIS and keyset pagination, detail, sources, ingestion runs, error format | 79 backend tests, 99% coverage in CI (PR #6) |
 | Frontend integration | OpenAPI export, generated TypeScript types, API client, demo fallback, attribution | 61 frontend tests; demo fallback checked in the browser (PR #7) |
+| Local end-to-end check | Fixed Docker Desktop (an empty 2023 disk file blocked the engine), ran migrations, all 79 backend tests, real ingestion twice, the API, and the app in the browser | Real events on the map with the CC BY attribution; second ingestion run changed nothing |
 | Mistakes caught along the way | Doubled constraint names, Alembic wanting to drop PostGIS's own tables, a stale Ruff cache, a time zone test that measured wall-clock time, fixture rows that never reached the rule under test | Each was found by a check (offline SQL render, CI, tests) and fixed in its own commit |
 
 Claude Code features used: project memory (`CLAUDE.md`), running tests and builds, Git/GitHub CLI operations, and browser checks of the running app. `/code-review` will be used on pull requests from here on.
