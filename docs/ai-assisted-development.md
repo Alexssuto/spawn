@@ -19,8 +19,14 @@ Spawn is developed with two AI tools that do different jobs. This page records w
 | Bugs found by tests | `formatDistance(996)` returned `"1000 m"`; a non-list value in `localStorage` crashed the app on load. Each was fixed in its own commit, with a regression test | Tests were red before the fix and green after |
 | CI | Wrote the GitHub Actions workflow (lint → typecheck → test → build) | Runs on the Phase 1 pull request |
 | Repository hygiene | Checked tracked files for secrets before the first push, hardened `.gitignore`, created the private repo | Confirmed through the GitHub API that the repo is private |
+| Phase 2a design | Profiled the real city data file (5,254 rows) and proposed the architecture, schema, endpoints and ADRs | The owner reviewed and approved each decision before any code (PR #2) |
+| Backend skeleton and schema | uv project, FastAPI app factory, settings, SQLAlchemy models, Alembic migration, CI with a PostGIS service container | CI green; `alembic check` proves models and migrations match (PRs #3, #4) |
+| Ingestion | Pydantic validation, cleaning, category mapping, idempotent upsert, deactivation, snapshot guard, CLI, 26-row real fixture | Unit tests + integration tests on PostGIS; parser run on the full file (PR #5) |
+| REST API | Nearby query with PostGIS and keyset pagination, detail, sources, ingestion runs, error format | 79 backend tests, 99% coverage in CI (PR #6) |
+| Frontend integration | OpenAPI export, generated TypeScript types, API client, demo fallback, attribution | 61 frontend tests; demo fallback checked in the browser (PR #7) |
+| Mistakes caught along the way | Doubled constraint names, Alembic wanting to drop PostGIS's own tables, a stale Ruff cache, a time zone test that measured wall-clock time, fixture rows that never reached the rule under test | Each was found by a check (offline SQL render, CI, tests) and fixed in its own commit |
 
-Claude Code features used: project memory (`CLAUDE.md`), running tests and builds, Git/GitHub CLI operations, and browser checks of the running app. `/code-review` will be used on pull requests from Phase 2 on.
+Claude Code features used: project memory (`CLAUDE.md`), running tests and builds, Git/GitHub CLI operations, and browser checks of the running app. `/code-review` will be used on pull requests from here on.
 
 ## GitHub Copilot: setup and how to use it
 
@@ -41,15 +47,32 @@ Claude Code features used: project memory (`CLAUDE.md`), running tests and build
 | Edit / agent mode | The mode selector in the Chat panel | Small, scoped multi-file edits |
 | Commit messages | Sparkle icon in the Source Control panel | Compare its message with what you would write |
 
-### Suggested learning exercises
+### Your Copilot tasks for Phase 2a
 
-These are small on purpose. Write the code yourself with Copilot helping, and make sure you can explain every line.
+These stories are labeled `copilot-practice` in the roadmap and were deliberately left unimplemented. Write the code yourself with Copilot helping; Claude Code reviews the PR (`/code-review`) instead of writing it. Make sure you can explain every line.
 
-1. **Add a "Free" filter** in `App.tsx` that shows only spawns with `price === 'Free'`. Add a test if you put the logic in `src/lib/`.
+**1. SPAWN-12: rarity rules** (Python, backend). The best first task.
+- File: `backend/src/spawn_api/domain/rarity.py`. It returns `COMMON` for everything today; its docstring suggests rules.
+- Start with the tests: create `backend/tests/unit/test_rarity.py` with one test per rule, including the boundaries (exactly 1 day, exactly 30 days). Ask Copilot Chat `/tests` for ideas, then delete the cases that are wrong or redundant.
+- Implement until the tests pass: `cd backend && uv run pytest tests/unit/test_rarity.py`.
+- Run all checks: `uv run ruff check && uv run ruff format --check && uv run mypy && uv run pytest`.
+- Existing tests don't assume everything is Common, so they keep passing. After merging, re-run ingestion: rarity is part of the content hash, so existing rows are updated once, then unchanged on the next run. That's idempotence working as designed, and a good thing to observe in `ingestion_runs`.
+
+**2. SPAWN-4: readiness endpoint** (Python, backend).
+- Add `GET /health/ready` in `backend/src/spawn_api/api/health.py`: run `SELECT 1` through the `get_session` dependency; return 200 if it works, 503 if the database is unreachable.
+- Tests: a unit test where the database is unreachable (point `Settings` at a closed port) expects 503; an integration test expects 200.
+
+**3. SPAWN-25: all-day display** (TypeScript, frontend).
+- Real events are all-day, but the app still shows countdowns like "ends in 11h". In `src/lib/time.ts`, make `timeLabel` return "Today" or "Until Nov 3" when `spawn.allDay` is true.
+- Tests first, in `src/lib/time.test.ts`.
+
+Open each task as its own branch with its Jira key (`feat/SPAWN-12-rarity-rules`), and its own PR.
+
+### Small warm-up exercises (optional)
+
+1. **Add a "Free" filter** in `App.tsx` that shows only spawns with `price === 'Free'`.
 2. **Add a test** that hidden spawns reveal at exactly `REVEAL_RADIUS` (boundary case) in `src/lib/spawnView.test.ts`.
 3. **Show total XP** on the Dex card using `totalXp` from `src/lib/progression.ts`.
-
-Open each one as its own branch and pull request, and watch CI run on it.
 
 ### Copilot usage log
 

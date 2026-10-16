@@ -62,44 +62,131 @@ Claude Code scaffolded the prototype, set up Vitest and CI, and wrote most of th
 
 ---
 
-## Phase 2a: backend and real data (proposed, not built yet)
+## Phase 2a: backend and real data (built, PRs #3 to #7)
 
-Design: [architecture/phase-2a-backend.md](architecture/phase-2a-backend.md). Decisions: [ADRs 0002–0006](decisions/README.md). Roadmap: [roadmap.md](roadmap.md).
+Design: [architecture/phase-2a-backend.md](architecture/phase-2a-backend.md). Decisions: [ADRs 0002–0007](decisions/README.md). Roadmap: [roadmap.md](roadmap.md).
 
-### Decisions to be able to defend
+### What exists
 
-**"Why Python and FastAPI?"** ([ADR 0002](decisions/0002-python-fastapi-backend.md))
-I want to strengthen Python, and the next feature, CLIP photo verification, is PyTorch anyway. FastAPI validates requests and responses from type hints with Pydantic and generates OpenAPI docs automatically. Django was heavier than needed for a read-only API; Node would have meant three runtimes once the ML part arrives.
+- **Python 3.12 backend** (`backend/`, managed with uv): FastAPI, Pydantic v2, SQLAlchemy 2, Alembic, PostGIS.
+- **Ingestion** of the City of Montréal's public events, run with `python -m spawn_api.ingest montreal-events`.
+- **Read-only REST API**: nearby spawns (PostGIS distance, filters, keyset pagination), spawn detail, sources, ingestion runs.
+- **Frontend** reads the API, with types generated from the OpenAPI schema, and falls back to sample data when the API is down.
+- **CI**: backend job with a real PostGIS service container; migrations applied, `alembic check`, OpenAPI freshness, tests with coverage.
 
-**"Why PostgreSQL with PostGIS?"** ([ADR 0003](decisions/0003-postgresql-postgis.md))
-The main query is "what's within X metres of me that hasn't ended." PostGIS does this with a spatial (GiST) index and correct distances on the Earth's surface, inside the database. The data is relational, and a unique constraint on `(source, external_id)` is what makes ingestion safe to re-run.
+### Real numbers (measured, with their date)
 
-**"How does the ingestion work?"** ([ADR 0004](decisions/0004-batch-ingestion-open-data.md))
-A batch job: extract → validate → clean → transform → filter → load → report. Each step can be explained with a real finding from the data:
-- No ID column, but the event URL is unique across all 5,254 rows → used as the external ID.
-- Missing values are the *string* `"nan"` → a cleaning step turns them into real nulls.
-- Dates have no times → spawns are "all day" in the Montréal time zone.
-- 106 rows have no coordinates → rejected and counted, not silently dropped.
-- The download fails without a User-Agent header (`RBAC: access denied`) → the client always sends one.
+| What | Number | Measured |
+|---|---|---|
+| Rows in the city's file | 5,254 | Oct 16, 2026 snapshot |
+| Accepted / skipped / rejected | 2,868 / 2,372 / 14 | same snapshot, parser run locally |
+| Main skip reasons | 1,729 already ended, 345 online, 298 not in-person (support groups, tech help, council...) | same |
+| Rejections | 12 no coordinates, 2 outside Montréal | same |
+| Events for young children (hidden by default) | 938 of the accepted | same |
+| Parse time for the whole file | 0.14 s | on my laptop, one run |
+| Backend tests | 79, 99% line coverage | CI, PR #6 |
+| Frontend tests | 61 | local and CI, PR #7 |
 
-**"What does idempotent mean here?"**
-Running the job twice gives the same database as running it once. Rows are upserted on their natural key, and only written when a hash of their content changed. That makes retries and scheduling safe.
+Only quote these with their context ("on the Oct 16 snapshot"). The city's file changes daily.
 
-**"Why not Kafka?"** ([ADR 0005](decisions/0005-kafka-as-separate-lab.md))
-One file per day, one producer, one consumer: Kafka would add a broker to operate without solving a problem I have. It becomes worth it with many sources pushing updates continuously, or several consumers needing the same events. I'm building it as a separate lab with the same transform code, to learn partitions, keys, consumer groups, offsets and dead-letter topics on real data.
+### Walk me through it (2 minutes)
 
-**"Why is the API read-only?"** ([ADR 0006](decisions/0006-private-read-only.md))
-Nothing in Phase 2a needs to write through HTTP; ingestion runs from the command line. No write endpoints means no authentication to get wrong yet. That changes when server-side catches arrive.
+> Every day the city publishes its events calendar as a GeoJSON file. My ingestion job downloads it, validates each row with a Pydantic model, cleans it, maps the city's 28 categories to my 7 types, and filters out what isn't an in-person experience. Each row comes out as Accepted, Skipped or Rejected, with a reason. Accepted rows are upserted into PostgreSQL on their natural key, the event's URL, and only written when a hash of their content changed, so the job is idempotent. Events that disappear are deactivated, never deleted. Every run is recorded with its counts. A FastAPI service then answers "what's within 5 km of me this week" with a PostGIS query that uses a spatial index, and the React app reads it through types generated from the OpenAPI schema.
+
+### Questions I should be able to answer
+
+**Python and design**
+
+- **"Where did you use object-oriented design, and why?"**
+  `EventSource` is an abstract base class with `fetch()` and `parse()`. The pipeline only talks to that interface, so a new source (sports programming, a curated file) is one new subclass. The loader is injected into the source (a Strategy): it downloads by default, and tests or the `--file` option pass a local reader. All SQL lives in repository classes, and the pipeline orchestrates them. I kept plain functions where a class adds nothing, such as cleaning helpers and the category mapping table.
+- **"Why do parse results use Accepted / Skipped / Rejected instead of exceptions?"**
+  Bad rows are expected, not exceptional: 14 rows out of 5,254 are invalid. Returning a value keeps one bad row from stopping the job, and the pipeline uses `match` (structural pattern matching) to count each case. Skipped and Rejected are deliberately separate, so on-purpose filtering never hides real data problems.
+- **"Frozen dataclasses, slots, StrEnum: why?"**
+  `NormalizedSpawn` is frozen, so nothing modifies it after validation, and `slots` makes it lighter. `StrEnum` values are plain strings ("music"), so they're identical in Python, in the database, in JSON and in the TypeScript types.
+
+**Data pipeline**
+
+- **"How did you deal with dirty data?"** With real examples:
+  - Missing values were the *strings* `"nan"` and `"None"` (from a pandas export) → `blank_to_none` converts them.
+  - NaN floats made the JSON invalid for PostgreSQL's `jsonb` → `json_safe` replaces them.
+  - 8 rows had a positive longitude (a missing minus sign puts them in Kazakhstan), and 2 had latitude equal to longitude → rejected by a Montréal bounding box. I chose not to "fix" the sign automatically, because that would be guessing.
+  - No ID column → the event URL is unique across all rows, so it is the external ID.
+- **"What makes it idempotent?"**
+  `INSERT ... ON CONFLICT (source_id, external_id) DO UPDATE ... WHERE content_hash IS DISTINCT` (in practice `!=`). A second run on the same file writes nothing; an integration test proves it. `RETURNING (xmax = 0)` tells inserted rows from updated ones.
+- **"What if the download is broken?"**
+  If the new snapshot has fewer than half as many usable rows as are currently active, the run fails with `SuspiciousSnapshotError` and nothing is deactivated, rather than wiping the map. The failed run is still recorded, because bookkeeping is committed in its own transaction.
+- **"Why deactivate instead of delete?"**
+  Spawn IDs stay stable, so anything that will reference them later (catches, photos) stays valid, and an event that comes back is simply reactivated (also tested).
+
+**Databases, SQLAlchemy, PostGIS**
+
+- **"geography or geometry?"**
+  `geography(Point, 4326)`: computations happen on the Earth's surface, so `ST_Distance` returns metres directly. Geometry would compute in degrees on a flat plane.
+- **"How is the nearby query fast?"**
+  `ST_DWithin(location, point, radius)` can use the GiST index on `location`; `ST_Distance` is only computed for the rows that pass. A partial index on `ends_at WHERE is_active` helps the time filter.
+- **"How do you paginate?"**
+  Keyset pagination: the cursor is the last `(distance, id)` returned, and the next page asks for rows after it. Unlike `OFFSET`, it doesn't skip or repeat rows when data changes between pages, and later pages aren't slower. A test checks that paging through returns every spawn exactly once.
+- **"How do you manage schema changes?"**
+  Alembic migrations, versioned in Git. CI applies them to an empty database and runs `alembic check`, which fails if the ORM models and the migrations ever disagree.
+- **"Enums: native PostgreSQL ENUM or not?"**
+  Text plus a CHECK constraint. Adding a value later is a constraint change instead of `ALTER TYPE`, and the database still rejects bad values (tested by inserting "poetry" with raw SQL).
+- **"How is each request's database access managed?"**
+  A FastAPI dependency opens one session per request and always closes it. The session factory lives on `app.state`, so tests can point the app at another database without globals.
+
+**REST API**
+
+- **"Why /api/v1?"** So the contract can change later without breaking existing clients.
+- **"How do you test time-dependent endpoints?"** The current time is a dependency (`get_now`), and tests replace it with `app.dependency_overrides`.
+- **"How do the frontend and backend stay in sync?"** FastAPI generates the OpenAPI schema; it's committed as `backend/openapi.json`, and the TypeScript types are generated from it. CI fails if either is stale, so a renamed field breaks the frontend build instead of production.
+- **"Errors?"** One JSON shape for 400, 404 and 422: `{"error": {"status", "message", "details"}}`, with the invalid field names in `details`.
+
+**Testing and CI**
+
+- **"Unit vs integration tests?"** Unit tests cover pure logic with no database (parsing rules on 26 real rows, cleaning, time zones, HTTP with a mock transport, API validation). Integration tests run against real PostGIS: the schema's constraints, the full ingestion job, the API.
+- **"How do you keep integration tests independent?"** Each schema test runs in a transaction that is rolled back. The ingestion and API tests commit for real (the job manages its own transactions), so a fixture truncates the tables after each one.
+- **"How does CI get a database?"** A GitHub Actions *service container* runs `postgis/postgis` next to the job, with a health check, and the tests receive its URL through an environment variable. The credentials only exist inside that throwaway container.
+
+### Things that went wrong, and what I learned (good interview stories)
+
+1. **Constraint names were prefixed twice** (`ck_spawns_ck_spawns_...`). Alembic re-applies the naming convention to names that already have it; `op.f()` marks a name as final. Found by rendering the migration SQL offline before any database existed.
+2. **`alembic check` wanted to drop dozens of tables.** The `postgis/postgis` image also installs the TIGER geocoder and topology extensions. Fixed by managing only the tables our models declare.
+3. **Lint passed locally but failed in CI.** A stale local Ruff cache still remembered a folder I had renamed. CI starts clean every time, which is exactly why it exists.
+4. **Python time zone trap.** Subtracting two datetimes that share a `tzinfo` gives wall-clock time: Nov 1, 2026 looked like 24 hours instead of 25. Compare in UTC; PostgreSQL stores real instants anyway.
+5. **A test fixture didn't test what I thought.** The rows I picked for "bad coordinates" were filtered out earlier (one had ended, one was online), so they never reached the coordinate check. Printing every row's outcome caught it.
+
+### Who wrote what (be precise)
+
+Claude Code wrote most of the backend and integration code from the design we agreed on; I made the decisions recorded in the ADRs (architecture, children filter, focus on three deliverables) and reviewed each PR. My own implementation work is tracked in [ai-assisted-development.md](ai-assisted-development.md); the `copilot-practice` stories are mine to write.
+
+**Study plan to own this code** (read in this order, and run the tests after each):
+1. `domain/catalog.py`, `domain/normalized.py`: the vocabulary and the normalized shape
+2. `ingest/base.py`, `ingest/montreal_events.py` + `tests/unit/ingest/test_montreal_events.py`
+3. `ingest/repository.py` (the upsert), `ingest/pipeline.py` + `tests/integration/test_ingestion.py`
+4. `db/models.py`, `migrations/versions/20261016_0001_initial_schema.py`
+5. `db/queries.py`, `api/spawns.py` + `tests/integration/test_api.py`
+6. `src/api/client.ts`, `src/hooks/useSpawns.ts` on the frontend
+
+### Things to understand well before an interview
+- [ ] `INSERT ... ON CONFLICT DO UPDATE ... WHERE` and why it makes the job idempotent
+- [ ] geography vs geometry, `ST_DWithin` vs `ST_Distance`, what a GiST index is
+- [ ] Keyset vs offset pagination
+- [ ] What `alembic upgrade`, `downgrade` and `check` each do
+- [ ] SQLAlchemy 2.0 `Mapped[...]` models, sessions, and why one session per request
+- [ ] FastAPI dependencies and `dependency_overrides`
+- [ ] Pydantic validation (`BeforeValidator`) and how a validation error becomes a `Rejected`
+- [ ] GitHub Actions service containers
+- [ ] Time zones: aware datetimes, UTC, DST, `timestamptz`
 
 ### Technology status (keep this honest)
 
 | Technology | Status |
 |---|---|
 | React, TypeScript, Vite, Leaflet, Vitest | Built |
-| GitHub Actions | Built (frontend CI) |
-| Claude Code | Used throughout |
-| Python, FastAPI, PostgreSQL/PostGIS, Alembic | Designed, not built yet |
-| Jira, Confluence | Content prepared; setup is mine to do |
-| Kafka | Planned as a separate lab |
-| GitHub Copilot | Set up and exercises planned; log only what I actually do |
+| Python, FastAPI, Pydantic, SQLAlchemy, Alembic | Built (Phase 2a) |
+| PostgreSQL + PostGIS | Built; runs in CI. Local runs need Docker Desktop updated |
+| GitHub Actions | Built: frontend and backend CI, PostGIS service container, contract checks |
+| Claude Code | Used throughout, including `/code-review` on PRs from here on |
+| GitHub Copilot | Exercises ready (SPAWN-12 rarity, readiness, all-day display); log only what I actually do |
+| Jira, Confluence | Content and setup guide ready; setting them up is mine to do |
+| Kafka | Planned as a separate lab, after the three deliverables |
 | Artifactory, Argo CD | Understood conceptually; not used, with reasons |
