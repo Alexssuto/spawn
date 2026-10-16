@@ -15,6 +15,8 @@ export function distanceMeters(a: LatLng, b: LatLng): number {
 }
 
 export function formatDistance(m: number): string {
-  if (m < 1000) return `${Math.round(m / 10) * 10} m`
+  // Round before choosing the unit, so 995 m shows as "1.0 km" rather than "1000 m".
+  const rounded = Math.round(m / 10) * 10
+  if (rounded < 1000) return `${rounded} m`
   return `${(m / 1000).toFixed(m < 10_000 ? 1 : 0)} km`
 }

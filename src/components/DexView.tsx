@@ -1,6 +1,7 @@
 import { RARITIES, RARITY_ORDER, TYPES, type ExperienceType } from '../data/catalog'
 import type { Spawn } from '../data/spawns'
 import type { Catch } from '../hooks/useCollection'
+import { levelFromXp, totalXp } from '../lib/progression'
 
 interface Props {
   catches: Catch[]
@@ -8,22 +9,8 @@ interface Props {
   onReset: () => void
 }
 
-export function levelFromXp(xp: number) {
-  // Each level costs 250 XP more than the last: 250, 500, 750...
-  let level = 1
-  let need = 250
-  let rest = xp
-  while (rest >= need) {
-    rest -= need
-    level++
-    need += 250
-  }
-  return { level, progress: rest / need, toNext: need - rest }
-}
-
 export function DexView({ catches, spawns, onReset }: Props) {
-  const xp = catches.reduce((sum, c) => sum + RARITIES[c.rarity].xp, 0)
-  const { level, progress, toNext } = levelFromXp(xp)
+  const { level, progress, toNext } = levelFromXp(totalXp(catches))
   const total = spawns.length
   const pct = total ? Math.round((catches.length / total) * 100) : 0
   const types = Object.keys(TYPES) as ExperienceType[]
