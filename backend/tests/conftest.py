@@ -10,11 +10,11 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
+from alembic import command
 from alembic.config import Config
 from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session
 
-from alembic import command
 from spawn_api.db.engine import make_engine
 from spawn_api.settings import Settings
 

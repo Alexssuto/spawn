@@ -3,12 +3,12 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from alembic import command
 from geoalchemy2.elements import WKTElement
 from sqlalchemy import Engine, func, inspect, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from alembic import command
 from spawn_api.db.models import IngestionRun, Source, Spawn
 from spawn_api.domain.catalog import IngestionStatus, Rarity, SpawnType
 from tests.conftest import alembic_config
