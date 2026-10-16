@@ -7,7 +7,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import sessionmaker
 
-from spawn_api.api import health
+from spawn_api.api import health, spawns
+from spawn_api.api.errors import install_error_handlers
 from spawn_api.db.engine import make_engine
 from spawn_api.settings import Settings, get_settings
 
@@ -28,7 +29,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_methods=["GET"],
         allow_headers=["*"],
     )
+    install_error_handlers(app)
     app.include_router(health.router)
+    app.include_router(spawns.router)
     return app
 
 
