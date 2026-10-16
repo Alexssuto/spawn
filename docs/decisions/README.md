@@ -12,5 +12,6 @@ These pages are also mirrored to Confluence (space **SPAWN**, page "Architecture
 | [0004](0004-batch-ingestion-open-data.md) | Daily batch ingestion from Montréal open data with idempotent upserts | Accepted |
 | [0005](0005-kafka-as-separate-lab.md) | Kafka as a separate learning lab, not in the production path | Accepted |
 | [0006](0006-private-read-only.md) | Private repository, no public deployment, read-only API | Accepted |
+| [0007](0007-openapi-contract-generated-types.md) | The OpenAPI schema is the API contract; frontend types are generated from it | Accepted |
 
 Template: Context → Decision → Alternatives considered → Consequences.
