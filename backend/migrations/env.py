@@ -1,0 +1,78 @@
+"""Alembic environment: connects with the app's settings and compares against the ORM models."""
+
+from logging.config import fileConfig
+from typing import Any, Literal
+
+from alembic import context
+from geoalchemy2 import alembic_helpers
+from sqlalchemy import engine_from_config, pool
+
+from spawn_api.db.models import Base
+from spawn_api.settings import get_settings
+
+config = context.config
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# Same source of truth as the app: SPAWN_DATABASE_URL (or the local default).
+config.set_main_option("sqlalchemy.url", str(get_settings().database_url))
+
+target_metadata = Base.metadata
+
+
+def include_object(
+    obj: Any,
+    name: str | None,
+    type_: Literal["schema", "table", "column", "index", "unique_constraint", "foreign_key_constraint"],
+    reflected: bool,
+    compare_to: Any,
+) -> bool:
+    """Only manage tables our models declare.
+
+    The postgis/postgis image also installs the TIGER geocoder and topology extensions, whose
+    dozens of tables (zip_lookup, featnames, topology...) are on the search path. Without this,
+    autogenerate and `alembic check` would want to drop them.
+    """
+    table_name = name if type_ == "table" else getattr(getattr(obj, "table", None), "name", None)
+    if reflected and table_name not in target_metadata.tables:
+        return False
+    return bool(alembic_helpers.include_object(obj, name, type_, reflected, compare_to))
+
+
+def run_migrations_offline() -> None:
+    """Emit SQL to stdout instead of running it (`alembic upgrade head --sql`)."""
+    context.configure(
+        url=config.get_main_option("sqlalchemy.url"),
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
+        process_revision_directives=alembic_helpers.writer,
+        render_item=alembic_helpers.render_item,
+    )
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def run_migrations_online() -> None:
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=include_object,
+            process_revision_directives=alembic_helpers.writer,
+            render_item=alembic_helpers.render_item,
+        )
+        with context.begin_transaction():
+            context.run_migrations()
+
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
