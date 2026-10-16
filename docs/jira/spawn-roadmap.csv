@@ -1,0 +1,39 @@
+Issue Type,Issue ID,Parent ID,Summary,Description,Story Points,Labels,Labels,Priority
+Epic,E1,,Backend foundation,"Python/FastAPI service skeleton, PostGIS database and migrations.",,,,Medium
+Epic,E2,,Event ingestion,Daily batch ingestion of Montreal open data events into PostgreSQL. See ADR 0004.,,,,Medium
+Epic,E3,,REST API,"Read-only versioned REST API for spawns, catalog, sources and ingestion runs.",,,,Medium
+Epic,E4,,Frontend integration,Existing React app consumes the API while keeping demo mode working.,,,,Medium
+Epic,E5,,Backend CI,GitHub Actions checks for the backend with a real PostGIS service container.,,,,Medium
+Epic,E6,,Atlassian setup,"Jira project, GitHub for Jira integration, Confluence space with architecture and ADRs.",,,,Medium
+Epic,E7,,Kafka ingestion lab,Separate learning implementation of the ingestion pipeline on Kafka. Not production. See ADR 0005.,,,,Medium
+Story,S1,E1,"Scaffold backend with uv, FastAPI, Ruff, mypy and pytest","Acceptance criteria: GET /health returns 200; ruff, mypy and pytest pass locally.",3,backend,,Medium
+Story,S2,E1,Docker Compose with PostGIS and settings from environment,Acceptance criteria: docker compose up starts PostGIS; the app reads DATABASE_URL via pydantic-settings; .env.example committed; .env gitignored.,2,backend,devops,Medium
+Story,S3,E1,SQLAlchemy models and first Alembic migration,"Acceptance criteria: Tables sources, spawns, ingestion_runs; UNIQUE(source_id, external_id); GiST index on location; alembic upgrade and downgrade both work.",5,backend,,Medium
+Story,S4,E1,Readiness endpoint checks the database,Acceptance criteria: GET /health/ready returns 200 when the DB answers and 503 otherwise; covered by a test.,1,backend,copilot-practice,Medium
+Story,S5,E5,Backend CI job with PostGIS service container,"Acceptance criteria: Workflow runs ruff, mypy, alembic upgrade head and pytest against PostGIS; fails the PR on any error.",3,devops,,Medium
+Story,S6,E5,Path filters for frontend and backend CI jobs,Acceptance criteria: Frontend-only changes skip the backend job and vice versa; docs-only changes run neither.,1,devops,,Medium
+Story,S7,E6,"Create Jira project, import roadmap, install GitHub for Jira",Acceptance criteria: Project SPAWN exists with these epics and stories; a branch named with a key appears on its story.,2,atlassian,,Medium
+Story,S8,E6,Create Confluence space with architecture page and ADRs,Acceptance criteria: Space SPAWN contains the Phase 2a architecture page and ADRs 0001-0006.,2,atlassian,docs,Medium
+Story,S9,E2,Download events GeoJSON and commit a small fixture,"Acceptance criteria: httpx client with User-Agent, timeout and retries; anonymized fixture of about 20 varied rows in tests/fixtures.",2,data,,Medium
+Story,S10,E2,Pydantic model for source rows and cleaning of missing values,"Acceptance criteria: The strings nan, None and empty become null; rows without coordinates or with invalid dates are rejected with a reason.",3,data,,Medium
+Story,S11,E2,Map city event categories to Spawn types,Acceptance criteria: All 28 categories mapped or explicitly excluded; online events and council meetings excluded; unit tests for every category.,2,data,copilot-practice,Medium
+Story,S12,E2,Rarity rules from type and duration,Acceptance criteria: Pure function with documented rules; unit tests for each rarity.,2,data,copilot-practice,Medium
+Story,S13,E2,Convert dates to all-day timestamps in America/Montreal,Acceptance criteria: starts_at at 00:00 and ends_at at 23:59:59 local time; daylight saving boundaries tested.,2,data,,Medium
+Story,S14,E2,Idempotent upsert with content hash and deactivation,Acceptance criteria: Running ingestion twice changes nothing the second time; rows missing from the source get is_active=false; integration tests.,5,data,backend,Medium
+Story,S15,E2,Record ingestion runs with counts and rejected samples,Acceptance criteria: Each run writes fetched/inserted/updated/unchanged/rejected counts and status; failed runs keep existing data.,2,data,,Medium
+Story,S16,E2,CLI entry point for ingestion,Acceptance criteria: python -m spawn_api.ingest --source montreal-events runs the full pipeline and prints a summary.,1,data,,Medium
+Story,S17,E2,Curated source from seed file,Acceptance criteria: The 20 hand-written experiences load as source curated through the same upsert path.,2,data,,Medium
+Story,S18,E3,Nearby spawns endpoint with PostGIS distance and filters,"Acceptance criteria: GET /api/v1/spawns with lat, lng, radius_m, type, status, audience, free, limit, cursor; distance_m from ST_Distance; tested on PostGIS.",5,backend,,Medium
+Story,S19,E3,Spawn detail endpoint with consistent 404,Acceptance criteria: GET /api/v1/spawns/{id}; an unknown id returns the standard error body.,1,backend,,Medium
+Story,S20,E3,Catalog endpoint for types and rarities,"Acceptance criteria: GET /api/v1/catalog returns labels, colors and XP matching the frontend catalog.",1,backend,copilot-practice,Medium
+Story,S21,E3,Sources and ingestion runs endpoints,"Acceptance criteria: GET /api/v1/sources and GET /api/v1/ingestion-runs, read-only, paginated.",2,backend,,Medium
+Story,S22,E3,Standard error format and CORS for local frontend,Acceptance criteria: All errors share one JSON shape; CORS allows only the local dev origin.,1,backend,,Medium
+Story,S23,E4,Generate TypeScript types from OpenAPI,Acceptance criteria: An npm script generates types from the backend schema; CI fails if they are out of date.,2,frontend,,Medium
+Story,S24,E4,"API client with loading, error states and sample-data fallback","Acceptance criteria: The app loads spawns from the API; when it is unreachable, demo mode with sample data still works; existing features unchanged.",3,frontend,,Medium
+Story,S25,E4,All-day spawn display,Acceptance criteria: All-day spawns show Today or Until <date> instead of a minute countdown; unit tests in src/lib.,2,frontend,copilot-practice,Medium
+Story,S26,E4,Show data source attribution,Acceptance criteria: Attribution to Ville de Montreal open data (CC BY 4.0) is visible in the app.,1,frontend,copilot-practice,Medium
+Story,S27,E5,Build the API Docker image in CI without pushing,Acceptance criteria: docker build succeeds in CI; the image is not pushed anywhere.,2,devops,,Medium
+Story,S28,E7,Kafka single-broker setup with Docker Compose,"Acceptance criteria: KRaft broker starts locally; topics spawn.events.raw, spawn.events.normalized and spawn.events.dlq are created by a script.",2,kafka,,Medium
+Story,S29,E7,Kafka producer for source rows,Acceptance criteria: Publishes each source row to spawn.events.raw keyed by external_id.,2,kafka,,Medium
+Story,S30,E7,Kafka consumer group with idempotent upsert and dead-letter topic,Acceptance criteria: The consumer reuses the backend transform code; invalid rows go to the DLQ; reprocessing the same messages does not duplicate rows.,5,kafka,,Medium
+Story,S31,E7,Kafka lab write-up with experiments,"Acceptance criteria: Documents stopping and adding consumers and replaying offsets, with what was actually observed.",2,kafka,docs,Medium
