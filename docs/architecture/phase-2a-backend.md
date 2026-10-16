@@ -1,6 +1,6 @@
 # Phase 2a: backend and real event data (proposal)
 
-**Status:** approved on 2026-10-16; being implemented.
+**Status:** approved and implemented on 2026-10-16 (PRs #3 to #7). Differences from the original proposal are listed in [section 10](#10-changes-made-during-implementation).
 **Scope:** a Python backend that ingests real Montréal events, stores them in PostgreSQL and serves them through a REST API that the existing frontend consumes. CLIP photo verification is **out of scope** (Phase 2b).
 
 ## 1. Data sources (verified on 2026-10-16)
@@ -270,3 +270,20 @@ A scheduled workflow can later run ingestion against a test database to detect w
 - **No times in the data** means real spawns show "today" or "until Nov 3" rather than minute countdowns. The UI gets an all-day display.
 - **Type and rarity mapping is a judgment call.** It is a small, tested table that is easy to tune, not hidden logic.
 - **Source format changes** would break ingestion. Pydantic validation fails loudly, the run is recorded as failed, and the previous data stays in place.
+
+## 10. Changes made during implementation
+
+| Proposal | What was built | Why |
+|---|---|---|
+| All-day events end at 23:59:59 | They end at midnight after the last day (`[start, end)`) | No one-second gap; durations are exact, including the 25-hour DST day |
+| `ingestion_runs` counted rejected rows | Separate `skipped` (filtered on purpose) and `rejected` (bad data), plus `deactivated` | Intentional filtering shouldn't hide real data problems |
+| `audience` filter parameter | `include_children` (default false) | Matches the decision: hide only events aimed at young children; family events stay |
+| `status` parameter | `live_only` (bool) plus `days_ahead` (default 7, max 60) | Without a horizon, events months away crowded the map |
+| `GET /api/v1/catalog` | Not built yet | `copilot-practice` story for the owner |
+| `GET /health/ready` | Not built yet | `copilot-practice` story for the owner |
+| Rarity rules | Every spawn is Common for now | `copilot-practice` story SPAWN-12 for the owner |
+| Coordinates outside Montréal | Rejected, not corrected | 8 rows had a missing minus sign; fixing them automatically would be guessing |
+| Curated source (story 17) | Not built yet | Backlog: the focus was the three deliverables |
+| Docker image build in CI (story 27) | Not built yet | Backlog |
+
+Measured on the Oct 16, 2026 snapshot: 5,254 rows → 2,868 accepted, 2,372 skipped, 14 rejected.

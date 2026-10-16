@@ -18,6 +18,20 @@ A personal project can drown in tickets. For now, only three deliverables matter
 
 Backend CI (E5) is built along the way, because every PR needs it. Atlassian setup (E6) is done by hand in parallel. The Kafka lab (E7) waits until the three deliverables work.
 
+### Progress (2026-10-16)
+
+All three deliverables are built (PRs #3 to #7).
+
+| Status | Stories (row numbers in the tables below) |
+|---|---|
+| **Done** | 1, 2, 3, 5, 6, 9, 10, 11, 13, 14, 15, 16, 18, 19, 21, 22, 23, 24 |
+| **Done differently** | 26: a one-line CC BY attribution on the map was added because the license requires it before real data is shown; a fuller sources view is still open |
+| **Yours, with Copilot** | 4 (readiness), 12 (rarity rules), 20 (catalog), 25 (all-day display) |
+| **Yours, Atlassian** | 7 (Jira + GitHub for Jira), 8 (Confluence): see the [setup guide](guides/atlassian-setup.md) |
+| **Backlog** | 17 (curated source), 27 (Docker image in CI), 28–31 (Kafka lab) |
+
+Story 11 (category mapping) was originally labeled `copilot-practice`; Claude Code implemented it because it depended directly on the data profiling. Story 12 (rarity) is the backend Copilot task instead.
+
 ## Working agreement
 
 1. Pick a story in Jira and move it to *In Progress*.
