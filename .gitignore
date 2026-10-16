@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables and secrets (never commit these)
+.env
+.env.*
+!.env.example
+
+# Test coverage output
+coverage
+
+# Personal Claude Code settings (the shared launch.json stays tracked)
+.claude/settings.local.json
