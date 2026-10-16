@@ -33,3 +33,14 @@ coverage
 
 # Personal Claude Code settings (the shared launch.json stays tracked)
 .claude/settings.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
