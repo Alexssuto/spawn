@@ -73,5 +73,11 @@ jobs:
       - name: Typecheck
         run: uv run mypy
 
+      - name: Apply database migrations to an empty database
+        run: uv run alembic upgrade head
+
+      - name: Check ORM models and migrations match
+        run: uv run alembic check
+
       - name: Tests (unit + integration) with coverage
         run: uv run pytest --cov=spawn_api --cov-report=term-missing
