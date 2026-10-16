@@ -84,7 +84,9 @@ Design: [architecture/phase-2a-backend.md](architecture/phase-2a-backend.md). De
 | Rejections | 12 no coordinates, 2 outside Montréal | same |
 | Events for young children (hidden by default) | 938 of the accepted | same |
 | Parse time for the whole file | 0.14 s | on my laptop, one run |
-| Backend tests | 79, 99% line coverage | CI, PR #6 |
+| Backend tests | 79, 99% line coverage | CI, PR #6; also 79/79 locally on PostGIS, Oct 16 |
+| Real ingestion, run twice | Run 1: 2,868 inserted. Run 2: 0 inserted, 0 updated, 2,868 unchanged | locally, Oct 16 (idempotence on real data) |
+| Events shown in the app | 307 within 25 km over the next 7 days, 85 live at the time | locally, Oct 16, ~00:50 |
 | Frontend tests | 61 | local and CI, PR #7 |
 
 Only quote these with their context ("on the Oct 16 snapshot"). The city's file changes daily.
@@ -183,7 +185,7 @@ Claude Code wrote most of the backend and integration code from the design we ag
 |---|---|
 | React, TypeScript, Vite, Leaflet, Vitest | Built |
 | Python, FastAPI, Pydantic, SQLAlchemy, Alembic | Built (Phase 2a) |
-| PostgreSQL + PostGIS | Built; runs in CI. Local runs need Docker Desktop updated |
+| PostgreSQL + PostGIS | Built; verified in CI and locally (Docker Desktop, Oct 16) |
 | GitHub Actions | Built: frontend and backend CI, PostGIS service container, contract checks |
 | Claude Code | Used throughout, including `/code-review` on PRs from here on |
 | GitHub Copilot | Exercises ready (SPAWN-12 rarity, readiness, all-day display); log only what I actually do |
