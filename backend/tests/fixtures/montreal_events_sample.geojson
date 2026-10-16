@@ -1,0 +1,799 @@
+{
+ "type": "FeatureCollection",
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+  }
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Brahms, Balkans & Bagels - Oktopus",
+    "url_fiche": "https://montreal.ca/evenements/brahms-balkans-bagels-oktopus-108310",
+    "description": "Le groupe Oktopus nous présente leur dernier opus Brahms, Balkans & Bagels, un voyage des plus dépaysant à travers l'histoire de la musique klezmer.",
+    "date_debut": "2026-11-07",
+    "date_fin": "2026-11-07",
+    "type_evenement": "Musique",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Lachine",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.433338,
+    "long": -73.68961,
+    "X": "289964.5",
+    "Y": "5032618"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.68961,
+     45.433338
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Effrayants ou fascinants?",
+    "url_fiche": "https://montreal.ca/evenements/effrayants-ou-fascinants-112515",
+    "description": "Kiosque de découvertes sur les chauves-souris, crapauds et araignées.",
+    "date_debut": "2026-10-31",
+    "date_fin": "2026-10-31",
+    "type_evenement": "Sport et plein air",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Ville de Montréal",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.499743,
+    "long": -73.768289,
+    "X": "283833.1",
+    "Y": "5040015.1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.768289,
+     45.499743
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Apéro-conférence Mocktails : Élixirs et Légendes Boréales",
+    "url_fiche": "https://montreal.ca/evenements/apero-conference-mocktails-elixirs-et-legendes-boreales-115364",
+    "description": "Apéro-conférence mocktails bibliothèque hélène-charbonneau inscrivez-vous 514 872-0568 gratuit",
+    "date_debut": "2026-11-24",
+    "date_fin": "2026-11-24",
+    "type_evenement": "Cuisine",
+    "public_cible": "Adultes",
+    "emplacement": "À l'extérieur",
+    "inscription": "Sur inscription",
+    "cout": "Gratuit",
+    "arrondissement": "Ahuntsic-Cartierville",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.553373,
+    "long": -73.662956,
+    "X": "292077",
+    "Y": "5045953"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.662956,
+     45.553373
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "On s’lâche pas! - Hubert Proulx",
+    "url_fiche": "https://montreal.ca/evenements/slache-pas-hubert-proulx-108339",
+    "description": "Hubert et Viktor Proulx nous livrent des tranches de leur vie, parfois drôle, parfois moins, mais toujours sincères.",
+    "date_debut": "2026-11-27",
+    "date_fin": "2026-11-27",
+    "type_evenement": "Théâtre",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Lachine",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.433338,
+    "long": -73.68961,
+    "X": "289964.5",
+    "Y": "5032618"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.68961,
+     45.433338
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Ko tè a tounen istwa (Là où la terre se fait récit) | Richarson Dorvil",
+    "url_fiche": "https://montreal.ca/evenements/ko-te-tounen-istwa-la-ou-la-terre-se-fait-recit-richarson-dorvil-99463",
+    "description": "Nouvelle exposition de Richarson Dorvil mettant en lumière le patrimoine culturel d'Haïti au Parc Louis-Querbes",
+    "date_debut": "2025-09-30",
+    "date_fin": "2030-04-30",
+    "type_evenement": "Exposition",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Montréal-Nord",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.595516499269,
+    "long": -73.634014924878,
+    "X": "294344.4",
+    "Y": "5050632.3"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.634014924878,
+     45.595516499268996
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Atelier : Culture des champignons",
+    "url_fiche": "https://montreal.ca/evenements/atelier-culture-des-champignons-117091",
+    "description": "Atelier sur la mycologie.",
+    "date_debut": "2026-11-12",
+    "date_fin": "2026-11-12",
+    "type_evenement": "Jardinage",
+    "public_cible": "Adultes",
+    "emplacement": "En salle",
+    "inscription": "Sur inscription",
+    "cout": "Gratuit",
+    "arrondissement": "Villeray–Saint-Michel–Parc-Extension",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.543689,
+    "long": -73.613517,
+    "X": "295935.5",
+    "Y": "5044870.1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.613517,
+     45.543689
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Searching for Love - Jerry Tremblay",
+    "url_fiche": "https://montreal.ca/evenements/searching-love-jerry-tremblay-108319",
+    "description": "Entre numéros de cirque et moments de franche rigolade malaisants, Jerry Tremblay cherche l'amour... tout en subtilité! Un spectacle qui fait du bien!",
+    "date_debut": "2026-10-17",
+    "date_fin": "2026-10-17",
+    "type_evenement": "Humour",
+    "public_cible": "Adultes",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Lachine",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.433338,
+    "long": -73.68961,
+    "X": "289964.5",
+    "Y": "5032618"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.68961,
+     45.433338
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Halloween à la Maison Robert-Bélanger",
+    "url_fiche": "https://montreal.ca/evenements/halloween-la-maison-robert-belanger-114736",
+    "description": "visite",
+    "date_debut": "2026-10-31",
+    "date_fin": "2026-10-31",
+    "type_evenement": "Fête et marché",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Saint-Laurent",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.503559,
+    "long": -73.729368,
+    "X": "286876",
+    "Y": "5040429.8"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.729368,
+     45.503559
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "6.58: Manifesto Andrea Peña & artists",
+    "url_fiche": "https://montreal.ca/evenements/658-manifesto-andrea-pena-artists-114450",
+    "description": "Triptyque chorégraphique qui interroge l’artificialité comme construction majeure de notre société post-industrielle.",
+    "date_debut": "2026-12-09",
+    "date_fin": "2026-12-09",
+    "type_evenement": "Danse",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Outremont",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.520001,
+    "long": -73.608439,
+    "X": "296328.5",
+    "Y": "5042237.1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.608439,
+     45.520001
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Shirono Ballon - Cirque à volonté",
+    "url_fiche": "https://montreal.ca/evenements/shirono-ballon-cirque-volonte-114726",
+    "description": "Shirono Ballon raconte le parcours de Ryu vers le cirque. Un spectacle poétique et inspirant sur la quête de soi, le rêve et la réconciliation.",
+    "date_debut": "2026-10-24",
+    "date_fin": "2026-10-24",
+    "type_evenement": "Cirque",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Gratuit",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.595475,
+    "long": -73.523843,
+    "X": "302939.8",
+    "Y": "5050619.2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.523843,
+     45.595475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Bêtes de fêtes - Les Incomplètes",
+    "url_fiche": "https://montreal.ca/evenements/betes-de-fetes-les-incompletes-114732",
+    "description": "BÊTES DE FÊTE de la compagnie Les Incomplètes est le bal costumé délirant des enfants! Costumes loufoques, DJ électrisant et rythmes festifs",
+    "date_debut": "2026-10-25",
+    "date_fin": "2026-10-25",
+    "type_evenement": "Théâtre",
+    "public_cible": "Famille",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Gratuit",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.595475,
+    "long": -73.523843,
+    "X": "302939.8",
+    "Y": "5050619.2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.523843,
+     45.595475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Fabriquer sa propre épinglette - Enfants",
+    "url_fiche": "https://montreal.ca/evenements/fabriquer-sa-propre-epinglette-enfants-115667",
+    "description": "Atelier de fabrication d'une épinglette pour les jeunes de 4 à 13 ans",
+    "date_debut": "2026-10-18",
+    "date_fin": "2026-10-18",
+    "type_evenement": "Art et artisanat",
+    "public_cible": "Enfants",
+    "emplacement": "En salle",
+    "inscription": "Sur inscription",
+    "cout": "Gratuit",
+    "arrondissement": "Côte-des-Neiges–Notre-Dame-de-Grâce",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.466598,
+    "long": -73.630945,
+    "X": "294560.6",
+    "Y": "5036305"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.630945,
+     45.466598
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Contes et comptines",
+    "url_fiche": "https://montreal.ca/evenements/contes-et-comptines-115145",
+    "description": "Heure du conte pour les 0 à 2 ans à la bibliothèque Mercier.",
+    "date_debut": "2026-10-19",
+    "date_fin": "2026-10-19",
+    "type_evenement": "Heure du conte",
+    "public_cible": "Enfants d'âge préscolaire",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.595475,
+    "long": -73.523843,
+    "X": "302939.8",
+    "Y": "5050619.2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.523843,
+     45.595475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance ordinaire du conseil d'arrondissement de Saint-Léonard de décembre 2026",
+    "url_fiche": "https://montreal.ca/evenements/seance-ordinaire-du-conseil-darrondissement-de-saint-leonard-de-decembre-2026-102713",
+    "description": "Tous les mois, les citoyennes et citoyens de Saint-Léonard peuvent assister à la séance ordinaire du conseil d'arrondissement  et y poser des questions.",
+    "date_debut": "2026-12-07",
+    "date_fin": "2026-12-07",
+    "type_evenement": "Conseil et comité",
+    "public_cible": "Pour tous",
+    "emplacement": "À l'extérieur",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Saint-Léonard",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.58577,
+    "long": -73.598376,
+    "X": "297123.6",
+    "Y": "5049545.1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.598376,
+     45.58577
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Variations énigmatiques - Orchestre métropolitain",
+    "url_fiche": "https://montreal.ca/evenements/variations-enigmatiques-orchestre-metropolitain-109578",
+    "description": "Plongez dans les univers d’Edward Elgar, de Henri Dutilleux et de Valerie Coleman avec un programme à la fois élégant, poétique et coloré.",
+    "date_debut": "2027-04-03",
+    "date_fin": "2027-04-03",
+    "type_evenement": "Musique",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.595475,
+    "long": -73.523843,
+    "X": "302939.8",
+    "Y": "5050619.2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.523843,
+     45.595475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Les deux côtés de la médaille : 50 ans des jeux olympiques à Hochelaga-Maisonneuve",
+    "url_fiche": "https://montreal.ca/evenements/les-deux-cotes-de-la-medaille-50-ans-des-jeux-olympiques-hochelaga-maisonneuve-108970",
+    "description": "Venez voir l'exposition Les deux côtés de la médaille : 50 ans des jeux olympiques à Hochelaga-Maisonneuve à partir du 17 juillet à la Place des Tisserandes.",
+    "date_debut": "2026-07-17",
+    "date_fin": "2028-06-01",
+    "type_evenement": "Exposition",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.541268196970634,
+    "long": -73.54692218055175,
+    "X": "301135.7",
+    "Y": "5044595.9"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.54692218055175,
+     45.541268196970634
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance du conseil d'arrondissement de Ville-Marie de décembre",
+    "url_fiche": "https://montreal.ca/evenements/seance-du-conseil-darrondissement-de-ville-marie-de-decembre-39867",
+    "description": "Participez à la vie démocratique de Ville-Marie et assistez au conseil d’arrondissement du 8 décembre 2026 en personne ou en webdiffusion.",
+    "date_debut": "2026-12-08",
+    "date_fin": "2026-12-08",
+    "type_evenement": "Conseil et comité",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Ville-Marie",
+    "titre_adresse": "Salle du conseil d'arrondissement",
+    "adresse_principale": "800, boulevard De Maisonneuve Est",
+    "adresse_secondaire": "rez-de-chaussée",
+    "code_postal": "H2L4L8",
+    "lat": 45.516518,
+    "long": -73.559733,
+    "X": "300133.2",
+    "Y": "5041846"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.559733,
+     45.516518
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Dans l’œil du lièvre -  Christine Sioui Wawanoloath",
+    "url_fiche": "https://montreal.ca/evenements/dans-loeil-du-lievre-christine-sioui-wawanoloath-87905",
+    "description": "Christine Sioui Wawanoloath présente un monde de magie et d’apparitions où la couleur et la lumière rappellent la technique du vitrail, Illustrations lumineuses",
+    "date_debut": "2025-06-25",
+    "date_fin": "2027-06-25",
+    "type_evenement": "Exposition",
+    "public_cible": "Pour tous",
+    "emplacement": "En ligne",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Mercier–Hochelaga-Maisonneuve",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.553583493785,
+    "long": -73.539622314344,
+    "X": "301706.4",
+    "Y": "5045964.2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.539622314344,
+     45.55358349378499
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance du conseil d'arrondissement d'Outremont | Novembre",
+    "url_fiche": "https://montreal.ca/evenements/seance-du-conseil-darrondissement-doutremont-novembre-101300",
+    "description": "Participez à la vie démocratique d'Outremont et assistez au conseil d'arrondissement du 3 novembre 2026.",
+    "date_debut": "2026-11-03",
+    "date_fin": "2026-11-03",
+    "type_evenement": "Conseil et comité",
+    "public_cible": "Adultes",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Outremont",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": null,
+    "long": null,
+    "X": "",
+    "Y": ""
+   },
+   "geometry": null
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Atelier de réparation Pierrefonds",
+    "url_fiche": "https://montreal.ca/evenements/atelier-de-reparation-pierrefonds-107864",
+    "description": "Prenez part au repair café Pierrefonds",
+    "date_debut": "2026-11-07",
+    "date_fin": "2026-11-07",
+    "type_evenement": "Soutien et échange",
+    "public_cible": "Pour tous",
+    "emplacement": "En ligne",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Pierrefonds-Roxboro",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.496195210508,
+    "long": -73.847222328186,
+    "X": "277662.7",
+    "Y": "5039644.5"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.847222328186,
+     45.496195210508
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance du conseil d'arrondissement de LaSalle de novembre 2024",
+    "url_fiche": "https://montreal.ca/evenements/seance-du-conseil-darrondissement-de-lasalle-de-novembre-2024-59544",
+    "description": "Informez-vous sur la séance du conseil d'arrondissement de LaSalle.",
+    "date_debut": "2024-11-04",
+    "date_fin": "2024-11-04",
+    "type_evenement": "Conseil et comité",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "LaSalle",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.42832,
+    "long": -73.661233,
+    "X": "292183.6",
+    "Y": "5032055.5"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.661233,
+     45.42832
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance du comité exécutif",
+    "url_fiche": "https://montreal.ca/evenements/seance-du-comite-executif-63678",
+    "description": "Suivez en webdiffusion la séance du comité exécutif du 16 octobre 2024",
+    "date_debut": "2024-10-16",
+    "date_fin": "2024-10-16",
+    "type_evenement": "Conseil et comité",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Ville de Montréal",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": null,
+    "long": null,
+    "X": "",
+    "Y": ""
+   },
+   "geometry": null
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Grande vente de livres d'occasion",
+    "url_fiche": "https://montreal.ca/evenements/grande-vente-de-livres-doccasion-51226",
+    "description": "En juin et en novembre, deux grandes ventes de livres usagés se tiennent à la bibliothèque Saul-Bellow.",
+    "date_debut": "2026-11-28",
+    "date_fin": "2026-12-06",
+    "type_evenement": "nan",
+    "public_cible": "Famille",
+    "emplacement": "En ligne",
+    "inscription": "Entrée libre",
+    "cout": "Gratuit",
+    "arrondissement": "Lachine",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": 45.440449,
+    "long": -73.691033,
+    "X": "289855",
+    "Y": "5033408.5"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.691033,
+     45.440449
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Visite guidée de l'exposition Regarde! - Circuit ouest",
+    "url_fiche": "https://montreal.ca/evenements/visite-guidee-de-lexposition-regarde-circuit-ouest-109730",
+    "description": "Découvrez la 6e édition de l’exposition Regarde! grâce à une promenade avec une guide touristique passionnée.",
+    "date_debut": "2026-10-24",
+    "date_fin": "2026-10-24",
+    "type_evenement": "Exposition",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Sur inscription",
+    "cout": "Gratuit",
+    "arrondissement": "Ville-Marie",
+    "titre_adresse": "802 Rue Ontario Est coin St-Hubert Montréal, QC H2L 1N9",
+    "adresse_principale": "802 Rue Ontario Est",
+    "adresse_secondaire": "None",
+    "code_postal": "H2L1N9",
+    "lat": 45.51801510413816,
+    "long": 73.56409944351455,
+    "X": "2867865.9",
+    "Y": "14403867.7"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.56409944351455,
+     45.51801510413816
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Héroïnes et passions lyriques - Orchestre métropolitain",
+    "url_fiche": "https://montreal.ca/evenements/heroines-et-passions-lyriques-orchestre-metropolitain-112214",
+    "description": "Laissez la soprano Sarah Dufresne vous transporter dans les univers de grandes figures féminines de l'opéra.",
+    "date_debut": "2026-11-11",
+    "date_fin": "2026-11-11",
+    "type_evenement": "Musique",
+    "public_cible": "Pour tous",
+    "emplacement": "En salle",
+    "inscription": "Avec billet",
+    "cout": "Payant",
+    "arrondissement": "Verdun",
+    "titre_adresse": "Église Notre-Dame-des-Sept-Douleurs",
+    "adresse_principale": "4155, rue Wellington",
+    "adresse_secondaire": "None",
+    "code_postal": "H4G1V7",
+    "lat": -73.567354,
+    "long": -73.567354,
+    "X": "302672.6",
+    "Y": "-8166222.8"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -73.567354,
+     -73.567354
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "titre": "Séance de bien-être en ligne",
+    "url_fiche": "https://montreal.ca/evenements/seance-de-bien-etre-en-ligne-117410",
+    "description": "Découvrez notre série d’activités bien-être par visioconférence offert par la bibliothèque Saul-Bellow de Lachine.",
+    "date_debut": "2026-10-21",
+    "date_fin": "2026-10-21",
+    "type_evenement": "Bien-être",
+    "public_cible": "Adultes",
+    "emplacement": "En salle",
+    "inscription": "Sur inscription",
+    "cout": "Gratuit",
+    "arrondissement": "Lachine",
+    "titre_adresse": "nan",
+    "adresse_principale": "nan",
+    "adresse_secondaire": "nan",
+    "code_postal": "nan",
+    "lat": null,
+    "long": null,
+    "X": "",
+    "Y": ""
+   },
+   "geometry": null
+  }
+ ]
+}
