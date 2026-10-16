@@ -73,6 +73,9 @@ jobs:
       - name: Typecheck
         run: uv run mypy
 
+      - name: Check the committed OpenAPI schema is up to date
+        run: uv run python -m spawn_api.openapi | diff -u openapi.json -
+
       - name: Apply database migrations to an empty database
         run: uv run alembic upgrade head
 

@@ -1,23 +1,24 @@
 name: Frontend CI
 
-# Runs only when frontend code or its config changes (backend and docs changes skip it).
+# Runs only when frontend code, its config, or the API contract it's generated from changes.
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "backend/**"
-      - "docs/**"
-      - "**/*.md"
-      - "docker-compose.yml"
-      - ".github/workflows/backend.yml"
+    paths: &frontend_paths
+      - "src/**"
+      - "public/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - "tsconfig*.json"
+      - ".oxlintrc.json"
+      - ".nvmrc"
+      - "backend/openapi.json"
+      - ".github/workflows/frontend.yml"
   pull_request:
     branches: [main]
-    paths-ignore:
-      - "backend/**"
-      - "docs/**"
-      - "**/*.md"
-      - "docker-compose.yml"
-      - ".github/workflows/backend.yml"
+    paths: *frontend_paths
 
 # Read-only token: this workflow never needs to write to the repo.
 permissions:
@@ -43,6 +44,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check generated API types match backend/openapi.json
+        run: |
+          npm run api:types
+          git diff --exit-code src/api/schema.d.ts
 
       - name: Lint
         run: npm run lint
