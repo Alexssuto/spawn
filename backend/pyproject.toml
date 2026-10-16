@@ -1,0 +1,57 @@
+[project]
+name = "spawn-api"
+version = "0.1.0"
+description = "Spawn backend: ingests Montréal open data events into PostGIS and serves them over a REST API."
+readme = "README.md"
+authors = [
+    { name = "Alexssuto", email = "alexssuto@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi>=0.143.2",
+    "geoalchemy2>=0.20.0",
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.3.6",
+    "pydantic-settings>=2.16.0",
+    "sqlalchemy>=2",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.1",
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: pycodestyle + pyflakes, I: import order, B: likely bugs, UP: modern syntax,
+# SIM: simplifications, N: naming, RUF: ruff-specific checks
+select = ["E", "F", "I", "B", "UP", "SIM", "N", "RUF"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["geoalchemy2.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration: needs a running PostGIS database (DATABASE_URL)",
+]

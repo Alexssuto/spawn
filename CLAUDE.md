@@ -10,7 +10,9 @@ Spawn is a React + TypeScript (Vite) app: a live map of real-world experiences i
 - `npm run typecheck`: `tsc -b`
 - `npm run build`: production build
 
-Before saying a change is done, run lint, typecheck and tests. CI (`.github/workflows/ci.yml`) runs the same steps.
+Before saying a change is done, run lint, typecheck and tests. CI (`.github/workflows/frontend.yml`) runs the same steps.
+
+Backend (`backend/`, Python 3.12 via uv): `uv run ruff check`, `uv run ruff format --check`, `uv run mypy`, `uv run pytest`. Integration tests need PostGIS (`docker compose up -d` at the repo root, then set `SPAWN_DATABASE_URL`); CI (`.github/workflows/backend.yml`) always runs them against a PostGIS service container.
 
 ## Architecture rules
 

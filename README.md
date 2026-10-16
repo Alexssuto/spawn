@@ -101,15 +101,22 @@ Writing these tests found two real bugs, both fixed in their own commits: distan
 
 ## CI/CD
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push to `main` and every pull request:
+Two GitHub Actions workflows run on pushes to `main` and on pull requests. Path filters run each one only when its part of the repo changes.
 
+**[Frontend CI](.github/workflows/frontend.yml)**
 1. `npm ci`: clean install from the lockfile
 2. **Lint** with oxlint
 3. **Typecheck** with `tsc -b`
 4. **Unit tests** with Vitest
 5. **Build** with Vite, then upload `dist/` as a build artifact (kept 7 days)
 
-The workflow uses a read-only token and cancels outdated runs on the same branch. There is no deployment step: the project is intentionally not deployed publicly.
+**[Backend CI](.github/workflows/backend.yml)**
+1. `uv sync --locked`: exact locked Python dependencies
+2. **Lint and format check** with Ruff
+3. **Typecheck** with mypy (strict)
+4. **Tests** with pytest, including integration tests against a real **PostGIS service container**, with a coverage report
+
+Both use a read-only token and cancel outdated runs on the same branch. There is no deployment step: the project is intentionally not deployed publicly.
 
 ### Development workflow
 

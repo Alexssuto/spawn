@@ -1,0 +1,22 @@
+# Local development services. Start with:  docker compose up -d
+# Credentials here are for a throwaway local database only; they are not secrets.
+services:
+  db:
+    image: postgis/postgis:16-3.5
+    container_name: spawn-db
+    environment:
+      POSTGRES_USER: spawn
+      POSTGRES_PASSWORD: spawn
+      POSTGRES_DB: spawn
+    ports:
+      - "5432:5432"
+    volumes:
+      - spawn-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spawn -d spawn"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  spawn-db-data:
