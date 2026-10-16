@@ -14,7 +14,8 @@ const KEY = 'spawn.collection.v1'
 
 function read(): Catch[] {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '[]') as Catch[]
+    const saved: unknown = JSON.parse(localStorage.getItem(KEY) ?? '[]')
+    return Array.isArray(saved) ? (saved as Catch[]) : []
   } catch {
     return []
   }
