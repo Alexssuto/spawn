@@ -1,6 +1,6 @@
 # 0006: Private repository, no public deployment, read-only API
 
-**Status:** Proposed
+**Status:** Accepted (2026-10-16)
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 0004: Daily batch ingestion from Montréal open data with idempotent upserts
 
-**Status:** Proposed
+**Status:** Accepted (2026-10-16)
 
 ## Context
 

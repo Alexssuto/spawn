@@ -1,6 +1,6 @@
 # Phase 2a: backend and real event data (proposal)
 
-**Status:** proposed, waiting for approval before implementation.
+**Status:** approved on 2026-10-16; being implemented.
 **Scope:** a Python backend that ingests real Montréal events, stores them in PostgreSQL and serves them through a REST API that the existing frontend consumes. CLIP photo verification is **out of scope** (Phase 2b).
 
 ## 1. Data sources (verified on 2026-10-16)
@@ -22,7 +22,7 @@ What profiling the real file showed, and how the design handles it:
 | Missing values are the **string** `"nan"` (e.g. address on 5,067 rows) | Cleaning step converts `"nan"`, `"None"` and `""` to real nulls |
 | 106 rows have no coordinates | Rejected during validation and counted in the ingestion report |
 | 345 events are online, 434 are council meetings | Excluded: they cannot be "caught" in person |
-| About 30% target young children (story time, preschool) | Ingested with their audience, but hidden from the default API results |
+| About 30% target young children (story time, preschool) | Ingested with their audience. Only events whose audience is specifically children (`Enfants`, `Enfants d'âge préscolaire`) are hidden by default; `Famille` and `Pour tous` stay visible. An `include_children=true` filter shows everything (decided 2026-10-16) |
 | Direct downloads without a `User-Agent` header get `RBAC: access denied` | The HTTP client always sends an identifying User-Agent |
 
 ### Secondary, later: "Programmation sports et loisirs"
@@ -160,7 +160,7 @@ Users and catches stay in the browser (`localStorage`) in Phase 2a. Storing them
 | `GET` | `/api/v1/sources` | Data sources, licenses, last successful ingestion |
 | `GET` | `/api/v1/ingestion-runs` | Recent runs and their counts (read-only) |
 
-`GET /api/v1/spawns` parameters: `lat`, `lng` (required), `radius_m` (default 5,000, max 25,000), `type` (repeatable), `status` (`live`, `upcoming`, or both), `audience` (child-focused events excluded unless asked), `free`, `limit` (default 100, max 500), `cursor` (pagination).
+`GET /api/v1/spawns` parameters: `lat`, `lng` (required), `radius_m` (default 5,000, max 25,000), `type` (repeatable), `status` (`live`, `upcoming`, or both), `include_children` (default `false`: events aimed specifically at young children are hidden; family events are always shown), `free`, `limit` (default 100, max 500), `cursor` (pagination).
 
 Example response:
 

@@ -1,6 +1,6 @@
 # 0003: PostgreSQL with PostGIS for storage and geo queries
 
-**Status:** Proposed
+**Status:** Accepted (2026-10-16)
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 0005: Kafka as a separate learning lab, not in the production path
 
-**Status:** Proposed
+**Status:** Accepted (2026-10-16)
 
 ## Context
 

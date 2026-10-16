@@ -1,6 +1,6 @@
 # 0002: Backend in Python with FastAPI, in the same repository
 
-**Status:** Proposed
+**Status:** Accepted (2026-10-16)
 
 ## Context
 

@@ -8,6 +8,16 @@ Story points are planning estimates (1 = an hour or two, 5 = a few days of eveni
 - `backend`, `frontend`, `data`, `devops`, `docs`, `atlassian`, `kafka`
 - `copilot-practice`: stories meant for you to implement yourself, with GitHub Copilot's help. Claude Code reviews them instead of writing them.
 
+## Current focus (Phase 2a)
+
+A personal project can drown in tickets. For now, only three deliverables matter; everything else stays in the backlog:
+
+1. **Working ingestion**: real Montréal events validated, normalized and upserted into PostGIS (E1 + E2)
+2. **FastAPI API connected to PostGIS**: nearby spawns with real distance queries (E3)
+3. **Real events in the app**: the frontend reads the API, with demo mode still working (E4)
+
+Backend CI (E5) is built along the way, because every PR needs it. Atlassian setup (E6) is done by hand in parallel. The Kafka lab (E7) waits until the three deliverables work.
+
 ## Working agreement
 
 1. Pick a story in Jira and move it to *In Progress*.
