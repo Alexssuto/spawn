@@ -726,3 +726,15 @@ button {
 .map .leaflet-tile-pane {
   filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
 }
+
+.sheet-link {
+  display: inline-block;
+  margin: -6px 0 14px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sheet-link:hover {
+  text-decoration: underline;
+}

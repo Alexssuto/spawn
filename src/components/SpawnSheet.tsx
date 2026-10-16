@@ -40,6 +40,11 @@ export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
         {timeLabel(spawn, now)}
       </div>
       {!v.concealed && <p className="sheet-desc">{spawn.description}</p>}
+      {!v.concealed && spawn.url && (
+        <a className="sheet-link" href={spawn.url} target="_blank" rel="noreferrer">
+          Details at the source ↗
+        </a>
+      )}
       {v.concealed && <p className="sheet-desc muted">Something's out there. Walk closer to find out what.</p>}
 
       <button className={`catch-btn catch-${spawn.rarity}`} disabled={!v.canCatch} onClick={onCatch}>

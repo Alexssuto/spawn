@@ -12,6 +12,8 @@ interface Props {
   me: LatLng
   now: number
   selectedId: string | null
+  /** Extra attribution line for the data shown, e.g. a license requirement. */
+  dataAttribution?: string
   onSelect: (id: string) => void
   onTeleport: (p: LatLng) => void
 }
@@ -46,6 +48,18 @@ function ClickToTeleport({ onTeleport }: { onTeleport: (p: LatLng) => void }) {
   return null
 }
 
+/** Adds an attribution line (e.g. a data license) to the map's attribution control while mounted. */
+function DataAttribution({ text }: { text: string }) {
+  const map = useMap()
+  useEffect(() => {
+    map.attributionControl.addAttribution(text)
+    return () => {
+      map.attributionControl.removeAttribution(text)
+    }
+  }, [map, text])
+  return null
+}
+
 function FlyToSelected({ target }: { target: LatLng | null }) {
   const map = useMap()
   useEffect(() => {
@@ -54,7 +68,7 @@ function FlyToSelected({ target }: { target: LatLng | null }) {
   return null
 }
 
-export function MapView({ views, me, now, selectedId, onSelect, onTeleport }: Props) {
+export function MapView({ views, me, now, selectedId, dataAttribution, onSelect, onTeleport }: Props) {
   const selected = views.find((v) => v.spawn.id === selectedId)
   const lat = selected?.spawn.lat
   const lng = selected?.spawn.lng
@@ -69,6 +83,7 @@ export function MapView({ views, me, now, selectedId, onSelect, onTeleport }: Pr
       />
       <ClickToTeleport onTeleport={onTeleport} />
       <FlyToSelected target={target} />
+      {dataAttribution && <DataAttribution text={dataAttribution} />}
       <Circle
         center={[me.lat, me.lng]}
         radius={CATCH_RADIUS}
