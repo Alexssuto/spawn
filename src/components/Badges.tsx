@@ -1,19 +1,15 @@
 import { RARITIES, TYPES, type ExperienceType, type Rarity } from '../data/catalog'
+import { TypeIcon } from './Icons'
 
 export function TypeBadge({ type }: { type: ExperienceType }) {
-  const t = TYPES[type]
   return (
-    <span className="badge" style={{ color: t.color, borderColor: `${t.color}55`, background: `${t.color}18` }}>
-      {t.icon} {t.label}
+    <span className="pill">
+      <TypeIcon type={type} size={13} /> {TYPES[type].label}
     </span>
   )
 }
 
+/** Neutral pills; only Legendary takes the accent, because it's the one rarity worth crossing town for. */
 export function RarityBadge({ rarity }: { rarity: Rarity }) {
-  const r = RARITIES[rarity]
-  return (
-    <span className={`badge rarity-${rarity}`} style={{ color: r.color, borderColor: `${r.color}55` }}>
-      {r.label}
-    </span>
-  )
+  return <span className={`pill ${rarity === 'legendary' ? 'pill-accent' : ''}`}>{RARITIES[rarity].label}</span>
 }
