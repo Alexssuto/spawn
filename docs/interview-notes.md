@@ -190,6 +190,12 @@ Two automated reviews, then fixes, each with a test:
 
 **"How do you test accessibility?"** Component tests query by *role and accessible name* (`getByRole('dialog', { name })`), the way a screen reader sees the page, so a missing label fails a test. Plus an automated review against a published checklist, and checking keyboard behaviour in a real browser.
 
+### Visual identity (Oct 26)
+
+**"How did you decide what it should look like?"** Not by taste alone. I ran an automated design review (Taste Skill), which deals styles measured on real product screens. I picked the dark style made for events and media because Spawn is a quick look at night, and adapted it: one accent colour used only on data (what's live right now), types told apart by icons instead of seven colours, primary buttons as white pills. The accent is Montréal's own: the orange of the metro's orange line. Decision recorded in [ADR 0008](decisions/0008-visual-identity.md).
+
+**"What did you learn?"** That automated checks aren't enough. The inspector and the linter both passed, but *looking* at each screen found three bugs: the map flashing light grey while loading, the map credit drawing over the detail sheet, and an orange "0 Legendary" drawing the eye to nothing.
+
 ### Technology status (keep this honest)
 
 | Technology | Status |
