@@ -27,6 +27,7 @@ uv run uvicorn spawn_api.main:app --reload      # API on http://localhost:8000, 
 ```bash
 uv run python -m spawn_api.ingest montreal-events                    # download the city's file
 uv run python -m spawn_api.ingest montreal-events --file events.geojson  # use a local copy
+uv run python -m spawn_api.ingest curated                            # hand-picked places (seeds/curated.json)
 ```
 
 Each run prints its counts (fetched, inserted, updated, unchanged, skipped, rejected, deactivated) and the reasons for skipped and rejected rows, and records them in the `ingestion_runs` table (also served at `GET /api/v1/ingestion-runs`). Running it twice in a row writes nothing the second time.
@@ -65,7 +66,7 @@ Integration tests (`tests/integration/`, marker `integration`) need PostGIS. The
 $env:SPAWN_DATABASE_URL = "postgresql+psycopg://spawn:spawn@localhost:5432/spawn"; uv run pytest
 ```
 
-In CI they always run, against a PostGIS service container.
+They never use the database `SPAWN_DATABASE_URL` points at: they run on a sibling `<name>_test` database (e.g. `spawn_test`), created on first use, because they empty their tables. In CI they always run, against a PostGIS service container.
 
 ## Layout
 

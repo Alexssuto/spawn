@@ -134,3 +134,23 @@ def test_cli_ingests_a_local_file(capsys: pytest.CaptureFixture[str]) -> None:
     output = capsys.readouterr().out
     assert "montreal-events: succeeded" in output
     assert "fetched" in output and "26" in output
+
+
+def test_curated_source_goes_through_the_same_pipeline(
+    engine: Engine, session_factory: sessionmaker[Session]
+) -> None:
+    from spawn_api.ingest.curated import CuratedSource
+
+    pipeline = IngestionPipeline(session_factory, CuratedSource(), today=lambda: date(2026, 10, 26))
+    report = pipeline.run()
+    assert report.status is IngestionStatus.SUCCEEDED
+    assert report.rejected == 0
+    assert report.inserted == report.fetched - report.skipped  # everything in season was stored
+    assert report.skip_reasons == {"out of season": report.skipped}
+
+    again = IngestionPipeline(session_factory, CuratedSource(), today=lambda: date(2026, 10, 26)).run()
+    assert (again.inserted, again.updated) == (0, 0)  # idempotent like any other source
+
+    with Session(engine) as session:
+        recurring = session.scalars(select(Spawn.recurring).where(Spawn.external_id == "schwartzs")).one()
+    assert recurring == "Daily"
