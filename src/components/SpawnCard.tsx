@@ -1,8 +1,9 @@
-import { TYPES } from '../data/catalog'
 import { formatDistance } from '../lib/geo'
 import type { SpawnView } from '../lib/spawnView'
 import { isEndingSoon, timeLabel } from '../lib/time'
 import { RarityBadge } from './Badges'
+import { Check } from 'lucide-react'
+import { TypeIcon } from './Icons'
 
 interface Props {
   view: SpawnView
@@ -11,17 +12,12 @@ interface Props {
 }
 
 export function SpawnCard({ view: v, now, onClick }: Props) {
-  const t = TYPES[v.spawn.type]
   const ending = isEndingSoon(v.spawn, now)
   return (
     <button className={`card card-${v.status} ${v.caught ? 'card-caught' : ''}`} onClick={onClick}>
-      <div
-        className="card-icon"
-        aria-hidden="true"
-        style={{ background: `${t.color}22`, color: t.color, borderColor: `${t.color}66` }}
-      >
-        {v.concealed ? '?' : t.icon}
-      </div>
+      <span className="card-icon" aria-hidden="true">
+        {v.concealed ? '?' : <TypeIcon type={v.spawn.type} size={18} />}
+      </span>
       <div className="card-body">
         <div className="card-title">{v.displayTitle}</div>
         <div className="card-meta">
@@ -35,7 +31,7 @@ export function SpawnCard({ view: v, now, onClick }: Props) {
       </div>
       {v.caught && (
         <div className="card-check">
-          <span aria-hidden="true">✓</span>
+          <Check size={16} strokeWidth={2.25} aria-hidden="true" />
           <span className="sr-only">Caught</span>
         </div>
       )}

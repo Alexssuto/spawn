@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, type CSSProperties } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { RARITIES, TYPES } from '../data/catalog'
 import type { Spawn } from '../data/spawns'
+import { TypeIcon } from './Icons'
 
 interface Props {
   spawn: Spawn
@@ -38,14 +39,14 @@ export function CatchOverlay({ spawn, dexNumber, onDone }: Props) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onDone()
       }}
-      style={{ '--c': t.color, '--r': r.color } as CSSProperties}
     >
       <div className="overlay-inner">
-        <div className="overlay-kicker">Caught!</div>
+        {/* "Caught!" is the outcome of the player's action, the one word this moment exists for. */}
+        <div className="overlay-kicker">Caught!</div> {/* taste-skill-ignore */}
         <div className="overlay-orb" aria-hidden="true">
-          {t.icon}
+          <TypeIcon type={spawn.type} size={52} strokeWidth={1.5} />
         </div>
-        <div className="overlay-rarity" style={{ color: r.color }}>
+        <div className="overlay-rarity">
           {r.label} {t.label}
         </div>
         <h2 className="overlay-title" id={titleId}>

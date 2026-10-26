@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import L from 'leaflet'
 import { Circle, MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import { TYPES } from '../data/catalog'
+import { checkMarkup, typeIconMarkup } from './iconMarkup'
 import type { LatLng } from '../lib/geo'
 import { CATCH_RADIUS, type SpawnView } from '../lib/spawnView'
 import { isEndingSoon } from '../lib/time'
@@ -24,7 +24,6 @@ interface Props {
 const iconCache = new Map<string, L.DivIcon>()
 
 function spawnIcon(v: SpawnView, selected: boolean, endingSoon: boolean) {
-  const t = TYPES[v.spawn.type]
   const classes = [
     'pin',
     `pin-${v.spawn.rarity}`,
@@ -36,9 +35,8 @@ function spawnIcon(v: SpawnView, selected: boolean, endingSoon: boolean) {
   ]
     .filter(Boolean)
     .join(' ')
-  const html = `<div class="${classes}" style="--c:${t.color}"><span aria-hidden="true">${
-    v.concealed ? '?' : t.icon
-  }</span>${v.caught ? '<i class="pin-check" aria-hidden="true">✓</i>' : ''}</div>`
+  const glyph = v.concealed ? '<span class="pin-unknown">?</span>' : typeIconMarkup(v.spawn.type, 18)
+  const html = `<div class="${classes}" aria-hidden="true">${glyph}${v.caught ? `<i class="pin-check">${checkMarkup}</i>` : ''}</div>`
   let icon = iconCache.get(html)
   if (!icon) {
     icon = L.divIcon({ className: '', html, iconSize: [40, 40], iconAnchor: [20, 20] })
@@ -97,7 +95,8 @@ export function MapView({ views, me, now, selectedId, dataAttribution, onSelect,
       <Circle
         center={[me.lat, me.lng]}
         radius={CATCH_RADIUS}
-        pathOptions={{ color: '#a78bfa', weight: 1, fillColor: '#a78bfa', fillOpacity: 0.08 }}
+        // The catch ring is data (your reach), so it carries the one accent hue.
+        pathOptions={{ color: '#ff7a1a', weight: 1, dashArray: '4 4', fillColor: '#ff7a1a', fillOpacity: 0.06 }}
       />
       <Marker position={[me.lat, me.lng]} icon={meIcon} interactive={false} />
       {views.map((v) => (
