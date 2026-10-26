@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { RARITIES, RARITY_ORDER, TYPES, type ExperienceType } from '../data/catalog'
 import type { Spawn } from '../data/spawns'
 import type { Catch } from '../hooks/useCollection'
@@ -14,11 +15,12 @@ export function DexView({ catches, spawns, onReset }: Props) {
   const total = spawns.length
   const pct = total ? Math.round((catches.length / total) * 100) : 0
   const types = Object.keys(TYPES) as ExperienceType[]
+  const [confirmingReset, setConfirmingReset] = useState(false)
 
   return (
     <div className="dex">
       <div className="dex-card">
-        <div className="dex-region">MONTRÉAL</div>
+        <div className="dex-region">Montréal</div>
         <div className="dex-count">
           {catches.length}
           <span>/{total}</span>
@@ -26,8 +28,15 @@ export function DexView({ catches, spawns, onReset }: Props) {
         <div className="dex-pct">{pct}% explored</div>
         <div className="dex-level">
           <span>Lv. {level}</span>
-          <div className="bar">
-            <div className="bar-fill" style={{ width: `${progress * 100}%` }} />
+          <div
+            className="bar"
+            role="progressbar"
+            aria-label={`Progress to level ${level + 1}`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(progress * 100)}
+          >
+            <div className="bar-fill" style={{ transform: `scaleX(${progress})` }} />
           </div>
           <span className="muted">{toNext} XP to next</span>
         </div>
@@ -49,7 +58,9 @@ export function DexView({ catches, spawns, onReset }: Props) {
           const of = spawns.filter((s) => s.type === type).length
           return (
             <div key={type} className="dex-type" style={{ borderColor: `${t.color}44` }}>
-              <span className="dex-type-icon">{t.icon}</span>
+              <span className="dex-type-icon" aria-hidden="true">
+                {t.icon}
+              </span>
               <span>{t.label}</span>
               <b style={{ color: t.color }}>
                 {have}/{of}
@@ -69,7 +80,7 @@ export function DexView({ catches, spawns, onReset }: Props) {
             return (
               <li key={c.spawnId}>
                 <span className="dex-num">#{catches.length - i}</span>
-                <span className="dex-list-icon" style={{ color: t.color }}>
+                <span className="dex-list-icon" style={{ color: t.color }} aria-hidden="true">
                   {t.icon}
                 </span>
                 <span className="dex-list-body">
@@ -86,11 +97,34 @@ export function DexView({ catches, spawns, onReset }: Props) {
           })}
         </ul>
       )}
-      {catches.length > 0 && (
-        <button className="link-btn" onClick={onReset}>
-          Reset collection
-        </button>
-      )}
+
+      {catches.length > 0 &&
+        (confirmingReset ? (
+          // Erasing the collection can't be undone, so it takes a second, explicit step.
+          <div className="reset-confirm" role="alert">
+            <p>
+              Erase all {catches.length} {catches.length === 1 ? 'catch' : 'catches'}? This can't be undone.
+            </p>
+            <div className="reset-actions">
+              <button className="reset-cancel" onClick={() => setConfirmingReset(false)} autoFocus>
+                Keep My Dex
+              </button>
+              <button
+                className="reset-erase"
+                onClick={() => {
+                  onReset()
+                  setConfirmingReset(false)
+                }}
+              >
+                Erase Everything
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button className="link-btn" onClick={() => setConfirmingReset(true)}>
+            Reset collection
+          </button>
+        ))}
     </div>
   )
 }

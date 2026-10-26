@@ -18,6 +18,11 @@ interface Props {
   onTeleport: (p: LatLng) => void
 }
 
+// Icons are cached by their HTML. The map re-renders every clock tick, and handing react-leaflet a
+// new icon object each time made it rebuild every marker's DOM; an unchanged icon is now the same
+// object, so only markers whose look actually changed are touched.
+const iconCache = new Map<string, L.DivIcon>()
+
 function spawnIcon(v: SpawnView, selected: boolean, endingSoon: boolean) {
   const t = TYPES[v.spawn.type]
   const classes = [
@@ -31,14 +36,15 @@ function spawnIcon(v: SpawnView, selected: boolean, endingSoon: boolean) {
   ]
     .filter(Boolean)
     .join(' ')
-  return L.divIcon({
-    className: '',
-    html: `<div class="${classes}" style="--c:${t.color}"><span>${v.concealed ? '?' : t.icon}</span>${
-      v.caught ? '<i class="pin-check">✓</i>' : ''
-    }</div>`,
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-  })
+  const html = `<div class="${classes}" style="--c:${t.color}"><span aria-hidden="true">${
+    v.concealed ? '?' : t.icon
+  }</span>${v.caught ? '<i class="pin-check" aria-hidden="true">✓</i>' : ''}</div>`
+  let icon = iconCache.get(html)
+  if (!icon) {
+    icon = L.divIcon({ className: '', html, iconSize: [40, 40], iconAnchor: [20, 20] })
+    iconCache.set(html, icon)
+  }
+  return icon
 }
 
 const meIcon = L.divIcon({ className: '', html: '<div class="me-dot"></div>', iconSize: [20, 20], iconAnchor: [10, 10] })
@@ -63,7 +69,11 @@ function DataAttribution({ text }: { text: string }) {
 function FlyToSelected({ target }: { target: LatLng | null }) {
   const map = useMap()
   useEffect(() => {
-    if (target) map.flyTo([target.lat, target.lng], Math.max(map.getZoom(), 15), { duration: 0.6 })
+    if (!target) return
+    const zoom = Math.max(map.getZoom(), 15)
+    // Leaflet animates in JavaScript, so the CSS reduced-motion rule doesn't reach it.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) map.setView([target.lat, target.lng], zoom)
+    else map.flyTo([target.lat, target.lng], zoom, { duration: 0.6 })
   }, [map, target])
   return null
 }
@@ -92,9 +102,12 @@ export function MapView({ views, me, now, selectedId, dataAttribution, onSelect,
       <Marker position={[me.lat, me.lng]} icon={meIcon} interactive={false} />
       {views.map((v) => (
         <Marker
-          key={v.spawn.id}
+          // The key includes `concealed` because Leaflet only reads `title` when a marker is created.
+          key={`${v.spawn.id}:${v.concealed}`}
           position={[v.spawn.lat, v.spawn.lng]}
           icon={spawnIcon(v, v.spawn.id === selectedId, isEndingSoon(v.spawn, now))}
+          // Leaflet makes markers keyboard-focusable buttons; the title gives each one a name.
+          title={v.displayTitle}
           eventHandlers={{ click: () => onSelect(v.spawn.id) }}
           zIndexOffset={v.spawn.id === selectedId ? 1000 : v.status === 'live' ? 100 : 0}
         />

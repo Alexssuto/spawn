@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { TYPES, type ExperienceType } from './data/catalog'
 import type { Spawn } from './data/spawns'
 import { useCollection } from './hooks/useCollection'
@@ -6,26 +6,33 @@ import { useLocation } from './hooks/useLocation'
 import { useNow } from './hooks/useNow'
 import { useSpawns } from './hooks/useSpawns'
 import { sortViews, viewSpawn } from './lib/spawnView'
+import { parseUrlState, toSearch, type Tab } from './lib/urlState'
 import { MapView } from './components/MapView'
 import { SpawnCard } from './components/SpawnCard'
 import { SpawnSheet } from './components/SpawnSheet'
 import { CatchOverlay } from './components/CatchOverlay'
 import { DexView } from './components/DexView'
 
-type Tab = 'map' | 'nearby' | 'dex'
-
 // Required by the CC BY 4.0 license of the city's events data.
 const MONTREAL_OPEN_DATA_ATTRIBUTION =
   'Events: <a href="https://donnees.montreal.ca/dataset/evenements-publics">Ville de Montréal</a> (CC BY 4.0)'
+
+const TABS: readonly (readonly [Tab, string, string])[] = [
+  ['map', '🗺️', 'Map'],
+  ['nearby', '⚡', 'Nearby'],
+  ['dex', '📖', 'Dex'],
+]
 
 export default function App() {
   const { spawns, source: dataSource } = useSpawns()
   const now = useNow()
   const { position, source, gpsAvailable, teleport, followGps } = useLocation()
   const { catches, add, has, reset } = useCollection()
-  const [tab, setTab] = useState<Tab>('map')
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [filter, setFilter] = useState<ExperienceType | null>(null)
+  // The view is restored from the URL, so a shared link opens on the same tab, filter and spawn.
+  const [initial] = useState(() => parseUrlState(window.location.search))
+  const [tab, setTab] = useState<Tab>(initial.tab)
+  const [selectedId, setSelectedId] = useState<string | null>(initial.spawn)
+  const [filter, setFilter] = useState<ExperienceType | null>(initial.type)
   const [justCaught, setJustCaught] = useState<Spawn | null>(null)
 
   const views = useMemo(
@@ -36,6 +43,16 @@ export default function App() {
   const selected = views.find((v) => v.spawn.id === selectedId) ?? null
   const liveCount = views.filter((v) => v.status === 'live' && !v.caught).length
   const catchable = views.filter((v) => v.canCatch).length
+
+  // Once spawns have loaded, a link to a spawn that no longer exists shouldn't keep a dead id in the URL.
+  const loaded = dataSource.kind !== 'loading'
+  const urlSpawn = selected || !loaded ? selectedId : null
+
+  // The URL is the external system here: mirror the view into it so it can be shared or reloaded.
+  useEffect(() => {
+    const search = toSearch({ tab, type: filter, spawn: urlSpawn })
+    window.history.replaceState(null, '', `${window.location.pathname}${search}`)
+  }, [tab, filter, urlSpawn])
 
   const openSpawn = (id: string) => {
     setSelectedId(id)
@@ -52,9 +69,12 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">
-          <span className="brand-mark">◉</span> Spawn
-        </div>
+        <h1 className="brand">
+          <span className="brand-mark" aria-hidden="true">
+            ◉
+          </span>{' '}
+          Spawn
+        </h1>
         <div className="topbar-right">
           <span
             className={`chip ${dataSource.kind === 'api' ? 'chip-gps' : ''}`}
@@ -63,7 +83,7 @@ export default function App() {
             {dataSource.kind === 'api' ? '🛰️ Real' : dataSource.kind === 'demo' ? '🧪 Sample' : '…'}
           </span>
           <span className="chip chip-live">
-            <span className="live-dot" />
+            <span className="live-dot" aria-hidden="true" />
             {liveCount} live
           </span>
           <button
@@ -78,18 +98,23 @@ export default function App() {
       </header>
 
       {tab !== 'dex' && (
-        <div className="filters">
-          <button className={`filter ${filter === null ? 'filter-on' : ''}`} onClick={() => setFilter(null)}>
+        <div className="filters" role="group" aria-label="Filter by type">
+          <button
+            className={`filter ${filter === null ? 'filter-on' : ''}`}
+            aria-pressed={filter === null}
+            onClick={() => setFilter(null)}
+          >
             All
           </button>
           {(Object.keys(TYPES) as ExperienceType[]).map((type) => (
             <button
               key={type}
               className={`filter ${filter === type ? 'filter-on' : ''}`}
+              aria-pressed={filter === type}
               style={filter === type ? { borderColor: TYPES[type].color, color: TYPES[type].color } : undefined}
               onClick={() => setFilter(filter === type ? null : type)}
             >
-              {TYPES[type].icon} {TYPES[type].label}
+              <span aria-hidden="true">{TYPES[type].icon}</span> {TYPES[type].label}
             </button>
           ))}
         </div>
@@ -111,7 +136,7 @@ export default function App() {
               }}
             />
             {!selected && (
-              <div className="map-hint">
+              <div className="map-hint" aria-live="polite">
                 {catchable > 0
                   ? `⚡ ${catchable} in range — tap to catch`
                   : source === 'demo'
@@ -137,18 +162,23 @@ export default function App() {
         {tab === 'dex' && <DexView catches={catches} spawns={spawns} onReset={reset} />}
       </main>
 
-      <nav className="tabbar">
-        {(
-          [
-            ['map', '🗺️', 'Map'],
-            ['nearby', '⚡', 'Nearby'],
-            ['dex', '📖', 'Dex'],
-          ] as const
-        ).map(([id, icon, label]) => (
-          <button key={id} className={`tab ${tab === id ? 'tab-on' : ''}`} onClick={() => setTab(id)}>
-            <span className="tab-icon">{icon}</span>
+      <nav className="tabbar" aria-label="Sections">
+        {TABS.map(([id, icon, label]) => (
+          <button
+            key={id}
+            className={`tab ${tab === id ? 'tab-on' : ''}`}
+            aria-current={tab === id ? 'page' : undefined}
+            onClick={() => setTab(id)}
+          >
+            <span className="tab-icon" aria-hidden="true">
+              {icon}
+            </span>
             {label}
-            {id === 'dex' && catches.length > 0 && <span className="tab-count">{catches.length}</span>}
+            {id === 'dex' && catches.length > 0 && (
+              <span className="tab-count" aria-label={`${catches.length} caught`}>
+                {catches.length}
+              </span>
+            )}
           </button>
         ))}
       </nav>
