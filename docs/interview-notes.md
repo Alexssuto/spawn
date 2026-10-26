@@ -179,6 +179,17 @@ Claude Code wrote most of the backend and integration code from the design we ag
 - [ ] GitHub Actions service containers
 - [ ] Time zones: aware datetimes, UTC, DST, `timestamptz`
 
+### UI quality pass (Oct 26)
+
+Two automated reviews, then fixes, each with a test:
+- **Accessibility:** dialogs that close with Escape and take focus, a real `h1`, `aria-pressed` on filters, `aria-current` on tabs, `aria-describedby` linking the disabled Catch button to its reason, and a progress bar exposed as `role="progressbar"`.
+- **Destructive action:** "Reset collection" used to erase everything on one tap; it now asks first.
+- **Motion:** everything respects `prefers-reduced-motion`; pulses animate `opacity` (compositor) instead of `box-shadow` (repaint every frame).
+- **Performance:** the map re-renders every 15 s for the countdowns, and was rebuilding all ~300 marker icons each time. Icons are now cached, so unchanged markers aren't touched.
+- **Shareable links:** tab, filter and selected spawn live in the URL (`?spawn=…`), so a spawn can be sent to a friend. That's a growth feature as much as a UX one.
+
+**"How do you test accessibility?"** Component tests query by *role and accessible name* (`getByRole('dialog', { name })`), the way a screen reader sees the page, so a missing label fails a test. Plus an automated review against a published checklist, and checking keyboard behaviour in a real browser.
+
 ### Technology status (keep this honest)
 
 | Technology | Status |
