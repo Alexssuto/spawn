@@ -1,3 +1,4 @@
+import { useEffect, useId, useRef } from 'react'
 import { RARITIES } from '../data/catalog'
 import { formatDistance } from '../lib/geo'
 import { CATCH_RADIUS, type SpawnView } from '../lib/spawnView'
@@ -21,8 +22,28 @@ function catchHint(v: SpawnView): string {
 
 export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
   const { spawn } = v
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  const hintId = useId()
+
+  // Move focus into the sheet when it opens (or shows another spawn), so keyboard and
+  // screen-reader users land on it instead of staying on the map.
+  useEffect(() => {
+    sheetRef.current?.focus()
+  }, [spawn.id])
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
+  const hint = v.canCatch ? '' : catchHint(v)
+
   return (
-    <div className="sheet" role="dialog" aria-label={v.displayTitle}>
+    <div className="sheet" role="dialog" aria-labelledby={titleId} tabIndex={-1} ref={sheetRef}>
       <button className="sheet-close" onClick={onClose} aria-label="Close">
         ×
       </button>
@@ -31,12 +52,14 @@ export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
         <RarityBadge rarity={spawn.rarity} />
         {spawn.price && <span className="badge badge-muted">{spawn.price}</span>}
       </div>
-      <h2 className="sheet-title">{v.displayTitle}</h2>
+      <h2 className="sheet-title" id={titleId}>
+        {v.displayTitle}
+      </h2>
       <div className="sheet-place">
-        📍 {v.displayPlace} · {formatDistance(v.distance)}
+        <span aria-hidden="true">📍</span> {v.displayPlace} · {formatDistance(v.distance)}
       </div>
       <div className={`sheet-time ${v.status === 'live' ? 'text-live' : ''}`}>
-        {v.status === 'live' && <span className="live-dot" />}
+        {v.status === 'live' && <span className="live-dot" aria-hidden="true" />}
         {timeLabel(spawn, now)}
       </div>
       {!v.concealed && <p className="sheet-desc">{spawn.description}</p>}
@@ -47,10 +70,19 @@ export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
       )}
       {v.concealed && <p className="sheet-desc muted">Something's out there. Walk closer to find out what.</p>}
 
-      <button className={`catch-btn catch-${spawn.rarity}`} disabled={!v.canCatch} onClick={onCatch}>
-        {v.caught ? 'Caught ✓' : `Catch it · +${RARITIES[spawn.rarity].xp} XP`}
+      <button
+        className={`catch-btn catch-${spawn.rarity}`}
+        disabled={!v.canCatch}
+        aria-describedby={hint ? hintId : undefined}
+        onClick={onCatch}
+      >
+        {v.caught ? 'Caught ✓' : `Catch It · +${RARITIES[spawn.rarity].xp} XP`}
       </button>
-      {!v.canCatch && <div className="catch-hint">{catchHint(v)}</div>}
+      {hint && (
+        <div className="catch-hint" id={hintId}>
+          {hint}
+        </div>
+      )}
     </div>
   )
 }
