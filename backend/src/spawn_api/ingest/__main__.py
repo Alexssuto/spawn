@@ -15,12 +15,14 @@ from sqlalchemy.orm import sessionmaker
 
 from spawn_api.db.engine import make_engine
 from spawn_api.ingest.base import EventSource
+from spawn_api.ingest.curated import CuratedSource
 from spawn_api.ingest.montreal_events import MontrealEventsSource
 from spawn_api.ingest.pipeline import IngestionPipeline, IngestionReport
 from spawn_api.settings import get_settings
 
 SOURCES: dict[str, Callable[[Callable[[], Any] | None], EventSource]] = {
     "montreal-events": MontrealEventsSource,
+    "curated": CuratedSource,
 }
 
 

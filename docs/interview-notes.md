@@ -196,6 +196,16 @@ Two automated reviews, then fixes, each with a test:
 
 **"What did you learn?"** That automated checks aren't enough. The inspector and the linter both passed, but *looking* at each screen found three bugs: the map flashing light grey while loading, the map credit drawing over the detail sheet, and an orange "0 Legendary" drawing the eye to nothing.
 
+### Curated source and a test that deleted real data (Oct 26)
+
+**"How easy is it to add a data source?"** One subclass. The curated source (13 hand-picked places like the Kondiaronk lookout or Schwartz's) implements the same `EventSource` interface as the city's data and goes through the same pipeline: validation, idempotent upsert, run report. Seasonal places (Tam-Tams, Beaver Lake skating) are skipped outside their months.
+
+**"How did you get accurate coordinates?"** A catch only works within 150 m, so a wrong position makes a spawn uncatchable. I geocoded the real addresses with OpenStreetMap's Nominatim (respecting its 1 request/second policy) and kept only results where OSM returned the place's own name. Two ambiguous ones were dropped instead of guessed.
+
+**A good failure story:** running the tests locally *deleted my real ingested events*. The tests empty their tables after each run, and they were pointed at the same database as development. The ingestion safety guard caught the symptom first (it refused to apply a 15-row test file next to 2,868 real rows). Fix: tests now always use a separate `spawn_test` database, created automatically, and assert they're on it.
+
+**Real numbers move:** on Oct 26 the city's file had 4,757 rows → 2,386 accepted (vs 5,254 → 2,868 on Oct 16). Quote numbers with their date.
+
 ### Technology status (keep this honest)
 
 | Technology | Status |

@@ -1,0 +1,160 @@
+{
+  "about": "Hand-picked, evergreen Montreal experiences. Only places whose position was confirmed: coordinates © OpenStreetMap contributors (ODbL), geocoded with Nominatim on 2026-10-26, most matched by the place's own name in OSM. No opening hours or prices are claimed beyond what is stated.",
+  "experiences": [
+    {
+      "id": "bagel-duel",
+      "title": "The bagel duel",
+      "type": "food",
+      "description": "Get a sesame bagel at St-Viateur, then one at Fairmount a few blocks away. Pick a side.",
+      "place": "St-Viateur Bagel",
+      "address": "263 Rue Saint-Viateur Ouest",
+      "lat": 45.522717,
+      "lng": -73.602006,
+      "recurring": "Daily"
+    },
+    {
+      "id": "schwartzs",
+      "title": "Smoked meat at Schwartz's",
+      "type": "food",
+      "description": "A smoked meat sandwich at the counter, on the Main.",
+      "place": "Schwartz's",
+      "address": "3895 Boulevard Saint-Laurent",
+      "lat": 45.516328,
+      "lng": -73.57765,
+      "recurring": "Daily"
+    },
+    {
+      "id": "banquise-poutine",
+      "title": "Late-night poutine at La Banquise",
+      "type": "night",
+      "description": "Poutine on Rue Rachel, best after a night out.",
+      "place": "La Banquise",
+      "address": "994 Rue Rachel Est",
+      "lat": 45.525334,
+      "lng": -73.574753,
+      "recurring": "Late nights"
+    },
+    {
+      "id": "kondiaronk-view",
+      "title": "The view from Kondiaronk",
+      "type": "nature",
+      "description": "The downtown skyline from the Mount Royal lookout. Go for the sunset.",
+      "place": "Belvédère Kondiaronk",
+      "lat": 45.503533,
+      "lng": -73.58705,
+      "recurring": "Anytime",
+      "is_free": true,
+      "is_outdoor": true
+    },
+    {
+      "id": "tam-tams",
+      "title": "Tam-Tams on Mount Royal",
+      "type": "social",
+      "description": "Drummers and dancers around the Cartier monument on Sunday afternoons in the warm months.",
+      "place": "Monument à Sir George-Étienne Cartier",
+      "address": "Avenue du Parc",
+      "lat": 45.51422,
+      "lng": -73.585225,
+      "recurring": "Sundays",
+      "season_months": [5, 6, 7, 8, 9],
+      "is_free": true,
+      "is_outdoor": true
+    },
+    {
+      "id": "jean-talon-market",
+      "title": "Jean-Talon Market",
+      "type": "food",
+      "description": "Produce stands, cheese and maple at the big open-air market in Little Italy.",
+      "place": "Marché Jean-Talon",
+      "address": "7070 Avenue Henri-Julien",
+      "lat": 45.535914,
+      "lng": -73.615062,
+      "recurring": "Daily"
+    },
+    {
+      "id": "lachine-canal",
+      "title": "The Lachine Canal from Atwater Market",
+      "type": "nature",
+      "description": "Grab something at the market, then walk or ride along the canal path.",
+      "place": "Marché Atwater",
+      "lat": 45.479644,
+      "lng": -73.576781,
+      "recurring": "Anytime",
+      "is_free": true,
+      "is_outdoor": true
+    },
+    {
+      "id": "habitat-67",
+      "title": "Habitat 67 up close",
+      "type": "culture",
+      "description": "Moshe Safdie's stacked concrete boxes, built for Expo 67. Walk around them on Avenue Pierre-Dupuy.",
+      "place": "Habitat 67",
+      "address": "2600 Avenue Pierre-Dupuy",
+      "lat": 45.499878,
+      "lng": -73.543792,
+      "recurring": "Anytime",
+      "is_free": true,
+      "is_outdoor": true
+    },
+    {
+      "id": "wilenskys",
+      "title": "The Special at Wilensky's",
+      "type": "food",
+      "description": "The pressed sandwich at the Mile End lunch counter.",
+      "place": "Wilensky's",
+      "address": "34 Avenue Fairmount Ouest",
+      "lat": 45.523317,
+      "lng": -73.59483,
+      "recurring": "Lunch counter hours"
+    },
+    {
+      "id": "beaver-lake-skating",
+      "title": "Skate on Beaver Lake",
+      "type": "sport",
+      "description": "Outdoor skating on Mount Royal's lake once it freezes.",
+      "place": "Lac aux Castors",
+      "lat": 45.498705,
+      "lng": -73.597423,
+      "recurring": "Winter",
+      "season_months": [12, 1, 2],
+      "is_outdoor": true
+    },
+    {
+      "id": "oratory-stairs",
+      "title": "Climb up to Saint Joseph's Oratory",
+      "type": "culture",
+      "description": "From Chemin Queen-Mary, take the stairs up to the dome with the city behind you.",
+      "place": "Oratoire Saint-Joseph",
+      "address": "3800 Chemin Queen-Mary",
+      "lat": 45.493118,
+      "lng": -73.62089,
+      "recurring": "Anytime",
+      "is_free": true,
+      "is_outdoor": true
+    },
+    {
+      "id": "pineapple-tiki-bar",
+      "title": "The tiki bar under the green pineapple",
+      "type": "night",
+      "description": "Find the neon pineapple in Chinatown and go down the stairs.",
+      "place": "Le Mal Nécessaire",
+      "address": "1106 Boulevard Saint-Laurent",
+      "lat": 45.508527,
+      "lng": -73.561187,
+      "recurring": "Evenings",
+      "hidden": true
+    },
+    {
+      "id": "carre-saint-louis",
+      "title": "Carré Saint-Louis",
+      "type": "culture",
+      "description": "The fountain and the painted Victorian houses at the end of Prince-Arthur.",
+      "place": "Carré Saint-Louis",
+      "lat": 45.517117,
+      "lng": -73.569825,
+      "recurring": "Anytime",
+      "is_free": true,
+      "is_outdoor": true
+    }
+  ]
+}
