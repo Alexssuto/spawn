@@ -111,6 +111,7 @@ cp .env.example .env
 uv sync
 uv run alembic upgrade head                            # create the schema
 uv run python -m spawn_api.ingest montreal-events      # download and ingest real events
+uv run python -m spawn_api.ingest curated              # hand-picked evergreen places
 uv run uvicorn spawn_api.main:app --reload             # API on :8000, docs at /docs
 ```
 
