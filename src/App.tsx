@@ -1,3 +1,4 @@
+import { BookOpen, List, LocateFixed, Map as MapIcon, Navigation } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { TYPES, type ExperienceType } from './data/catalog'
 import type { Spawn } from './data/spawns'
@@ -12,16 +13,17 @@ import { SpawnCard } from './components/SpawnCard'
 import { SpawnSheet } from './components/SpawnSheet'
 import { CatchOverlay } from './components/CatchOverlay'
 import { DexView } from './components/DexView'
+import { BrandMark, TypeIcon } from './components/Icons'
 
 // Required by the CC BY 4.0 license of the city's events data.
 const MONTREAL_OPEN_DATA_ATTRIBUTION =
   'Events: <a href="https://donnees.montreal.ca/dataset/evenements-publics">Ville de Montréal</a> (CC BY 4.0)'
 
-const TABS: readonly (readonly [Tab, string, string])[] = [
-  ['map', '🗺️', 'Map'],
-  ['nearby', '⚡', 'Nearby'],
-  ['dex', '📖', 'Dex'],
-]
+const TABS = [
+  ['map', MapIcon, 'Map'],
+  ['nearby', List, 'Nearby'],
+  ['dex', BookOpen, 'Dex'],
+] as const satisfies readonly (readonly [Tab, unknown, string])[]
 
 export default function App() {
   const { spawns, source: dataSource } = useSpawns()
@@ -70,29 +72,28 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <h1 className="brand">
-          <span className="brand-mark" aria-hidden="true">
-            ◉
-          </span>{' '}
-          Spawn
+          <BrandMark /> Spawn
         </h1>
         <div className="topbar-right">
-          <span
-            className={`chip ${dataSource.kind === 'api' ? 'chip-gps' : ''}`}
-            title={dataSource.kind === 'demo' ? dataSource.reason : 'Events from the Spawn API'}
-          >
-            {dataSource.kind === 'api' ? '🛰️ Real' : dataSource.kind === 'demo' ? '🧪 Sample' : '…'}
-          </span>
           <span className="chip chip-live">
             <span className="live-dot" aria-hidden="true" />
             {liveCount} live
           </span>
+          <span className="chip" title={dataSource.kind === 'demo' ? dataSource.reason : 'Events from the Spawn API'}>
+            {dataSource.kind === 'api' ? 'Real events' : dataSource.kind === 'demo' ? 'Sample data' : 'Loading…'}
+          </span>
           <button
-            className={`chip ${source === 'gps' ? 'chip-gps' : ''}`}
+            className="chip chip-icon"
             onClick={followGps}
             disabled={!gpsAvailable || source === 'gps'}
+            aria-label={source === 'gps' ? 'Using your location' : 'Demo mode: tap the map to move. Use my location'}
             title={source === 'gps' ? 'Using your location' : 'Demo mode: tap the map to move'}
           >
-            {source === 'gps' ? '📍 GPS' : '🧭 Demo'}
+            {source === 'gps' ? (
+              <LocateFixed size={16} strokeWidth={1.75} aria-hidden="true" />
+            ) : (
+              <Navigation size={16} strokeWidth={1.75} aria-hidden="true" />
+            )}
           </button>
         </div>
       </header>
@@ -111,10 +112,9 @@ export default function App() {
               key={type}
               className={`filter ${filter === type ? 'filter-on' : ''}`}
               aria-pressed={filter === type}
-              style={filter === type ? { borderColor: TYPES[type].color, color: TYPES[type].color } : undefined}
               onClick={() => setFilter(filter === type ? null : type)}
             >
-              <span aria-hidden="true">{TYPES[type].icon}</span> {TYPES[type].label}
+              <TypeIcon type={type} size={14} /> {TYPES[type].label}
             </button>
           ))}
         </div>
@@ -138,7 +138,7 @@ export default function App() {
             {!selected && (
               <div className="map-hint" aria-live="polite">
                 {catchable > 0
-                  ? `⚡ ${catchable} in range — tap to catch`
+                  ? `${catchable} within reach — tap one to catch it`
                   : source === 'demo'
                     ? 'Demo mode: tap the map to move around'
                     : 'Walk toward a spawn to catch it'}
@@ -163,16 +163,14 @@ export default function App() {
       </main>
 
       <nav className="tabbar" aria-label="Sections">
-        {TABS.map(([id, icon, label]) => (
+        {TABS.map(([id, Icon, label]) => (
           <button
             key={id}
             className={`tab ${tab === id ? 'tab-on' : ''}`}
             aria-current={tab === id ? 'page' : undefined}
             onClick={() => setTab(id)}
           >
-            <span className="tab-icon" aria-hidden="true">
-              {icon}
-            </span>
+            <Icon size={20} strokeWidth={1.75} aria-hidden="true" className="tab-icon" />
             {label}
             {id === 'dex' && catches.length > 0 && (
               <span className="tab-count" aria-label={`${catches.length} caught`}>

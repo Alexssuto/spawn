@@ -1,3 +1,4 @@
+import { MapPin, X } from 'lucide-react'
 import { useEffect, useId, useRef } from 'react'
 import { RARITIES } from '../data/catalog'
 import { formatDistance } from '../lib/geo'
@@ -45,18 +46,18 @@ export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
   return (
     <div className="sheet" role="dialog" aria-labelledby={titleId} tabIndex={-1} ref={sheetRef}>
       <button className="sheet-close" onClick={onClose} aria-label="Close">
-        ×
+        <X size={18} strokeWidth={1.75} aria-hidden="true" />
       </button>
       <div className="sheet-badges">
         <TypeBadge type={spawn.type} />
         <RarityBadge rarity={spawn.rarity} />
-        {spawn.price && <span className="badge badge-muted">{spawn.price}</span>}
+        {spawn.price && <span className="pill">{spawn.price}</span>}
       </div>
       <h2 className="sheet-title" id={titleId}>
         {v.displayTitle}
       </h2>
       <div className="sheet-place">
-        <span aria-hidden="true">📍</span> {v.displayPlace} · {formatDistance(v.distance)}
+        <MapPin size={14} strokeWidth={1.75} aria-hidden="true" /> {v.displayPlace} · {formatDistance(v.distance)}
       </div>
       <div className={`sheet-time ${v.status === 'live' ? 'text-live' : ''}`}>
         {v.status === 'live' && <span className="live-dot" aria-hidden="true" />}
@@ -71,12 +72,12 @@ export function SpawnSheet({ view: v, now, onClose, onCatch }: Props) {
       {v.concealed && <p className="sheet-desc muted">Something's out there. Walk closer to find out what.</p>}
 
       <button
-        className={`catch-btn catch-${spawn.rarity}`}
+        className="catch-btn"
         disabled={!v.canCatch}
         aria-describedby={hint ? hintId : undefined}
         onClick={onCatch}
       >
-        {v.caught ? 'Caught ✓' : `Catch It · +${RARITIES[spawn.rarity].xp} XP`}
+        {v.caught ? 'Already Caught' : `Catch It · +${RARITIES[spawn.rarity].xp} XP`}
       </button>
       {hint && (
         <div className="catch-hint" id={hintId}>

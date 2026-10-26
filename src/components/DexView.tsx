@@ -3,6 +3,7 @@ import { RARITIES, RARITY_ORDER, TYPES, type ExperienceType } from '../data/cata
 import type { Spawn } from '../data/spawns'
 import type { Catch } from '../hooks/useCollection'
 import { levelFromXp, totalXp } from '../lib/progression'
+import { TypeIcon } from './Icons'
 
 interface Props {
   catches: Catch[]
@@ -41,29 +42,31 @@ export function DexView({ catches, spawns, onReset }: Props) {
           <span className="muted">{toNext} XP to next</span>
         </div>
         <div className="dex-rarities">
-          {RARITY_ORDER.map((r) => (
-            <div key={r} style={{ color: RARITIES[r].color }}>
-              <b>{catches.filter((c) => c.rarity === r).length}</b>
-              <span>{RARITIES[r].label}</span>
-            </div>
-          ))}
+          {RARITY_ORDER.map((r) => {
+            const count = catches.filter((c) => c.rarity === r).length
+            // The accent marks Legendary catches you have; a zero stays grey like any other zero.
+            return (
+              <div key={r} className={r === 'legendary' && count > 0 ? 'is-legendary' : undefined}>
+                <b>{count}</b>
+                <span>{RARITIES[r].label}</span>
+              </div>
+            )
+          })}
         </div>
       </div>
 
       <h3 className="section-title">By type</h3>
       <div className="dex-types">
         {types.map((type) => {
-          const t = TYPES[type]
           const have = catches.filter((c) => c.type === type).length
           const of = spawns.filter((s) => s.type === type).length
           return (
-            <div key={type} className="dex-type" style={{ borderColor: `${t.color}44` }}>
-              <span className="dex-type-icon" aria-hidden="true">
-                {t.icon}
-              </span>
-              <span>{t.label}</span>
-              <b style={{ color: t.color }}>
-                {have}/{of}
+            <div key={type} className="dex-type">
+              <TypeIcon type={type} size={16} />
+              <span>{TYPES[type].label}</span>
+              <b>
+                {have}
+                <span className="of">/{of}</span>
               </b>
             </div>
           )
@@ -76,20 +79,17 @@ export function DexView({ catches, spawns, onReset }: Props) {
       ) : (
         <ul className="dex-list">
           {[...catches].reverse().map((c, i) => {
-            const t = TYPES[c.type]
             return (
               <li key={c.spawnId}>
                 <span className="dex-num">#{catches.length - i}</span>
-                <span className="dex-list-icon" style={{ color: t.color }} aria-hidden="true">
-                  {t.icon}
-                </span>
+                <TypeIcon type={c.type} size={18} className="dex-list-icon" />
                 <span className="dex-list-body">
                   <b>{c.title}</b>
                   <span className="muted">
                     {c.place} · {new Date(c.caughtAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                   </span>
                 </span>
-                <span style={{ color: RARITIES[c.rarity].color }} className="dex-list-rarity">
+                <span className={`dex-list-rarity ${c.rarity === 'legendary' ? 'is-legendary' : ''}`}>
                   {RARITIES[c.rarity].label}
                 </span>
               </li>
