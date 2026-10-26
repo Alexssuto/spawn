@@ -44,3 +44,4 @@ __pycache__/
 .coverage
 coverage.xml
 htmlcov/
+.taste-skill/
