@@ -18,6 +18,8 @@ The events are real: a Python backend ingests the **City of Montréal's open dat
 - **Nearby list** sorted with live spawns first, then by distance, with type filters
 - **Real GPS or demo mode**: uses your location in Montréal; elsewhere, tap the map to move
 - **Real or sample data**: a chip shows which one is in use, and why
+- **Share card**: a 1080×1350 image of your Dex, shared through the phone's share sheet
+- **Shareable links**: a spawn, tab or filter can be sent as a URL
 
 **Backend**
 - **Daily ingestion** of the city's public events: validation, cleaning, category mapping, filtering, idempotent upserts, and a report for every run

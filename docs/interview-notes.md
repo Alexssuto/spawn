@@ -206,6 +206,12 @@ Two automated reviews, then fixes, each with a test:
 
 **Real numbers move:** on Oct 26 the city's file had 4,757 rows → 2,386 accepted (vs 5,254 → 2,868 on Oct 16). Quote numbers with their date.
 
+### Share card (Oct 26)
+
+**"How do people share their progress?"** "Share My Dex" draws a 1080×1350 image (Instagram's portrait size) on a canvas, in the app's own colours and icons, then opens the phone's share sheet with the Web Share API; on a desktop without file sharing, it downloads the PNG. The numbers come from the same pure functions as the Dex, so the card can't disagree with the app.
+
+**"How do you test a canvas?"** You don't in jsdom (there's no canvas). The stats and the caption are pure functions with unit tests; the share function is injected into the component, so its tests check behaviour (what's shared, the status message, the error path) without a real canvas; and the rendered image is checked by eye in a real browser. That last step caught a false caption: "Mostly Food" when four types were tied at one catch each.
+
 ### Technology status (keep this honest)
 
 | Technology | Status |

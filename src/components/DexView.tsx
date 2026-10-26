@@ -1,22 +1,48 @@
+import { Share2 } from 'lucide-react'
 import { useState } from 'react'
 import { RARITIES, RARITY_ORDER, TYPES, type ExperienceType } from '../data/catalog'
 import type { Spawn } from '../data/spawns'
 import type { Catch } from '../hooks/useCollection'
 import { levelFromXp, totalXp } from '../lib/progression'
+import { shareStats } from '../lib/shareCard'
+import { shareDex, type ShareOutcome } from '../share/shareDex'
 import { TypeIcon } from './Icons'
 
 interface Props {
   catches: Catch[]
   spawns: Spawn[]
   onReset: () => void
+  /** Injectable so tests don't need a real canvas or share sheet. */
+  share?: typeof shareDex
 }
 
-export function DexView({ catches, spawns, onReset }: Props) {
+const SHARE_MESSAGES: Record<ShareOutcome | 'error', string> = {
+  shared: 'Shared.',
+  downloaded: 'Saved spawn-dex.png. Post it anywhere.',
+  cancelled: '',
+  error: "Couldn't create the image. Try again.",
+}
+
+export function DexView({ catches, spawns, onReset, share = shareDex }: Props) {
   const { level, progress, toNext } = levelFromXp(totalXp(catches))
   const total = spawns.length
   const pct = total ? Math.round((catches.length / total) * 100) : 0
   const types = Object.keys(TYPES) as ExperienceType[]
   const [confirmingReset, setConfirmingReset] = useState(false)
+  const [sharing, setSharing] = useState(false)
+  const [shareMessage, setShareMessage] = useState('')
+
+  const onShare = async () => {
+    setSharing(true)
+    setShareMessage('')
+    try {
+      setShareMessage(SHARE_MESSAGES[await share(shareStats(catches))])
+    } catch {
+      setShareMessage(SHARE_MESSAGES.error)
+    } finally {
+      setSharing(false)
+    }
+  }
 
   return (
     <div className="dex">
@@ -54,6 +80,18 @@ export function DexView({ catches, spawns, onReset }: Props) {
           })}
         </div>
       </div>
+
+      {catches.length > 0 && (
+        <div className="share-row">
+          <button className="share-btn" onClick={onShare} disabled={sharing}>
+            <Share2 size={16} strokeWidth={2} aria-hidden="true" />
+            {sharing ? 'Creating Image…' : 'Share My Dex'}
+          </button>
+          <p className="share-status" aria-live="polite">
+            {shareMessage}
+          </p>
+        </div>
+      )}
 
       <h3 className="section-title">By type</h3>
       <div className="dex-types">
