@@ -102,3 +102,31 @@ describe('CatchOverlay', () => {
     expect(onDone).toHaveBeenCalledTimes(3)
   })
 })
+
+describe('DexView sharing', () => {
+  it('has no share button with an empty collection', () => {
+    render(<DexView catches={[]} spawns={spawns} onReset={() => {}} />)
+    expect(screen.queryByRole('button', { name: /Share My Dex/ })).toBeNull()
+  })
+
+  it('shares the stats computed from the collection and confirms', async () => {
+    const share = vi.fn().mockResolvedValue('downloaded')
+    render(<DexView catches={[catchOf(live)]} spawns={spawns} onReset={() => {}} share={share} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Share My Dex/ }))
+
+    expect(await screen.findByText(/Saved spawn-dex.png/)).toBeTruthy()
+    expect(share).toHaveBeenCalledOnce()
+    expect(share.mock.calls[0][0]).toMatchObject({ caught: 1, recent: [{ title: live.title }] })
+  })
+
+  it('says so when the image cannot be created', async () => {
+    const share = vi.fn().mockRejectedValue(new Error('no canvas'))
+    render(<DexView catches={[catchOf(live)]} spawns={spawns} onReset={() => {}} share={share} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Share My Dex/ }))
+
+    expect(await screen.findByText(/Couldn't create the image/)).toBeTruthy()
+    expect((screen.getByRole('button', { name: /Share My Dex/ }) as HTMLButtonElement).disabled).toBe(false)
+  })
+})
