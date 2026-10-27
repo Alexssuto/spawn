@@ -14,5 +14,6 @@ These pages are also mirrored to Confluence (space **SPAWN**, page "Architecture
 | [0006](0006-private-read-only.md) | Private repository, no public deployment, read-only API | Accepted |
 | [0007](0007-openapi-contract-generated-types.md) | The OpenAPI schema is the API contract; frontend types are generated from it | Accepted |
 | [0008](0008-visual-identity.md) | Visual identity: true black, one accent hue on data, outline icons | Accepted |
+| [0010](0010-venue-pins.md) | Events at the same point share one venue pin, grouped in our own code | Accepted |
 
 Template: Context → Decision → Alternatives considered → Consequences.
