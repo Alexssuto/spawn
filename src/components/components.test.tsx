@@ -4,9 +4,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { loadSpawns, type Spawn } from '../data/spawns'
 import type { Catch } from '../hooks/useCollection'
 import { viewSpawn } from '../lib/spawnView'
+import { groupByVenue } from '../lib/venues'
 import { CatchOverlay } from './CatchOverlay'
 import { DexView } from './DexView'
 import { SpawnSheet } from './SpawnSheet'
+import { VenueSheet } from './VenueSheet'
 
 const NOW = Date.UTC(2026, 9, 26, 18)
 const spawns = loadSpawns(NOW)
@@ -128,5 +130,42 @@ describe('DexView sharing', () => {
 
     expect(await screen.findByText(/Couldn't create the image/)).toBeTruthy()
     expect((screen.getByRole('button', { name: /Share My Dex/ }) as HTMLButtonElement).disabled).toBe(false)
+  })
+})
+
+describe('VenueSheet', () => {
+  // Three events at one library, like the city's data: one live, one later, one already caught.
+  const library = { lat: 45.53283, lng: -73.5514 }
+  const at = (id: string, extra: Partial<Spawn>): Spawn => ({ ...live, ...library, id, title: id, hidden: false, ...extra })
+  const venue = groupByVenue([
+    viewSpawn(at('Story hour', { startsAt: NOW + 3_600_000, endsAt: NOW + 7_200_000 }), library, NOW, false),
+    viewSpawn(at('Chess club', {}), library, NOW, false),
+    viewSpawn(at('Book swap', {}), library, NOW, true),
+  ])[0]
+
+  it('lists every event at the venue, best first, and opens the one tapped', () => {
+    const onSelect = vi.fn()
+    render(<VenueSheet venue={venue} now={NOW} onClose={() => {}} onSelect={onSelect} />)
+
+    expect(screen.getByRole('dialog', { name: '3 events here' })).toBeTruthy()
+    const rows = screen.getAllByRole('button').filter((b) => b.className.includes('card'))
+    expect(rows.map((r) => r.textContent)).toEqual([
+      expect.stringContaining('Chess club'),
+      expect.stringContaining('Book swap'),
+      expect.stringContaining('Story hour'),
+    ])
+
+    fireEvent.click(rows[2])
+    expect(onSelect).toHaveBeenCalledWith('Story hour')
+  })
+
+  it('says how many are live, takes focus, and closes on Escape', () => {
+    const onClose = vi.fn()
+    render(<VenueSheet venue={venue} now={NOW} onClose={onClose} onSelect={() => {}} />)
+
+    expect(screen.getByText(/2 live/)).toBeTruthy()
+    expect(document.activeElement).toBe(screen.getByRole('dialog'))
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(onClose).toHaveBeenCalledOnce()
   })
 })

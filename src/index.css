@@ -325,6 +325,24 @@ svg {
   color: var(--text);
   z-index: 10;
 }
+/* How many events share this pin (a venue). Neutral: the count is information, not something live or rare. */
+.pin-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--ground);
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 .pin-check {
   position: absolute;
   right: -4px;
@@ -420,6 +438,22 @@ svg {
 }
 .sheet-time.text-live {
   color: var(--accent);
+}
+/* A venue can hold two dozen events: the sheet stops at 70% of the map and its list scrolls. */
+.venue-sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: 70%;
+}
+.venue-title {
+  margin-top: 4px;
+  padding-right: 44px;
+}
+.venue-list {
+  min-height: 0;
+  margin-top: 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .sheet-desc {
   margin: 14px 0 16px;
