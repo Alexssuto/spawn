@@ -212,6 +212,22 @@ Two automated reviews, then fixes, each with a test:
 
 **"How do you test a canvas?"** You don't in jsdom (there's no canvas). The stats and the caption are pure functions with unit tests; the share function is injected into the component, so its tests check behaviour (what's shared, the status message, the error path) without a real canvas; and the rendered image is checked by eye in a real browser. That last step caught a false caption: "Mostly Food" when four types were tied at one catch each.
 
+### API container image (Oct 27)
+
+**What:** `backend/Dockerfile` builds the API into an image; a CI job builds it on every backend change, starts it, waits for `/health`, and checks it doesn't run as root. It is never pushed (ADR 0009).
+
+**"Why two stages?"** The first stage has uv and installs the exact locked versions; the second copies only the finished virtual environment. The final image has no build tools and no source tree: smaller, and less in it to attack.
+
+**"Why copy `uv.lock` before the code?"** Docker caches each layer and reuses it if its inputs didn't change. Installing dependencies from the lockfile alone means a code change rebuilds in seconds; only a dependency change reinstalls packages.
+
+**"Why a non-root user?"** If someone exploits the process, they get a user that can't change the image's files or install anything.
+
+**"Why not push it?"** Nothing deploys it yet, and a registry means credentials to manage. Pushing to a registry (GHCR, or JFrog Artifactory at a bank) and letting Argo CD deploy from it are the next steps of a real pipeline, and each needs its own decision.
+
+**"What does the smoke test not catch?"** It doesn't attach a database, so it proves the image starts and serves HTTP, not that it can reach PostGIS. The integration tests cover the database.
+
+**Concepts to understand:** image vs container; layers and the build cache; multi-stage builds; `EXPOSE` vs `-p`; why `localhost` inside a container isn't your computer (`host.docker.internal`); `HEALTHCHECK`; what a registry is and why Artifactory exists.
+
 ### Technology status (keep this honest)
 
 | Technology | Status |
@@ -224,4 +240,5 @@ Two automated reviews, then fixes, each with a test:
 | GitHub Copilot | Exercises ready (SPAWN-12 rarity, readiness, all-day display); log only what I actually do |
 | Jira, Confluence | Content and setup guide ready; setting them up is mine to do |
 | Kafka | Planned as a separate lab, after the three deliverables |
-| Artifactory, Argo CD | Understood conceptually; not used, with reasons |
+| Docker image | Built: multi-stage API image, built and smoke-tested in CI, never pushed |
+| Artifactory, Argo CD | Understood conceptually; not used, with reasons (the image is ready to be pushed and deployed when that's decided) |

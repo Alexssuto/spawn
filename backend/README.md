@@ -22,6 +22,18 @@ uv run python -m spawn_api.ingest montreal-events   # download and ingest real e
 uv run uvicorn spawn_api.main:app --reload      # API on http://localhost:8000, docs at /docs
 ```
 
+### Container image
+
+The API also runs as a Docker image (see [ADR 0009](../docs/decisions/0009-api-container-image.md)). CI builds and smoke-tests it on every backend change but never pushes it anywhere.
+
+```bash
+# from the repository root, with PostGIS running
+docker build -t spawn-api backend
+docker run --rm -p 8000:8000 -e SPAWN_DATABASE_URL=postgresql+psycopg://spawn:spawn@host.docker.internal:5432/spawn spawn-api
+```
+
+Inside the container, `localhost` is the container itself, so the database is reached through `host.docker.internal` (Docker Desktop's name for your computer).
+
 ### Ingestion
 
 ```bash
