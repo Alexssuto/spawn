@@ -4,7 +4,7 @@
 
 Instead of a list of "top 10 things to do," Spawn shows what is happening near you this week: a free concert, a market, a circus show, an exhibition about to close. Each experience has a **type** (Music, Food, Night, Culture, Sport, Nature, Social) and a **rarity**. You catch an experience by actually being there, and it goes into your personal Dex.
 
-The events are real: a Python backend ingests the **City of Montréal's open data calendar** every day into PostgreSQL/PostGIS and serves it through a REST API. When the backend isn't running, the app falls back to built-in sample data, so it always works as a demo.
+The events are real: a Python backend ingests the **City of Montréal's open data calendar** (published daily; the ingestion job is run by hand for now) into PostgreSQL/PostGIS and serves it through a REST API. When the backend isn't running, the app falls back to built-in sample data, so it always works as a demo.
 
 > **Status:** working prototype, private, not deployed. Phase 2a (backend and real data) is built; photo verification of catches with CLIP is next. See [Roadmap](#roadmap).
 
@@ -12,6 +12,7 @@ The events are real: a Python backend ingests the **City of Montréal's open dat
 
 **App**
 - **Map** of Montréal with pins colored by type and styled by rarity (legendary pins glow, spawns ending soon pulse, upcoming ones are dimmed)
+- **Venue pins**: events at the same place share one pin with a count; tapping it lists them all
 - **Location-gated catching**: you must be within 150 m of a spawn while it is live
 - **Hidden spawns**: name and place stay secret until you are within 400 m
 - **Dex**: progress per type and rarity, XP and levels, history of everything caught
@@ -161,6 +162,8 @@ Built with **Claude Code** (architecture, implementation, tests, reviews) and **
 
 ## Roadmap
 
+The product priorities (P0 to P3) come from the [product audit](docs/product-audit.md) and live in [docs/product-roadmap.md](docs/product-roadmap.md). The original engineering checklist:
+
 - [x] Playable frontend prototype, unit tests, CI
 - [x] **Backend** (Python / FastAPI) with PostgreSQL + PostGIS
 - [x] **Real event ingestion** from Montréal open data
@@ -177,6 +180,8 @@ Details: [docs/roadmap.md](docs/roadmap.md).
 
 | Document | Contents |
 |---|---|
+| [docs/product-audit.md](docs/product-audit.md) | What works, what doesn't, measured on real data (2026-10-27) |
+| [docs/product-roadmap.md](docs/product-roadmap.md) | Prioritised product work, P0 to P3 |
 | [docs/architecture/](docs/architecture/) | System design for each phase |
 | [docs/decisions/](docs/decisions/README.md) | Architecture decision records (why each choice was made) |
 | [docs/roadmap.md](docs/roadmap.md) | Epics, stories and progress, with a CSV for Jira import |

@@ -2,6 +2,8 @@
 
 Managed in **Jira** (project key `SPAWN`). This file is the source for the initial import: [`docs/jira/spawn-roadmap.csv`](jira/spawn-roadmap.csv). Once imported, Jira is the source of truth and this file only gives the overview.
 
+> **Product priorities** now live in [product-roadmap.md](product-roadmap.md) (from the [audit of 2026-10-27](product-audit.md)). This file stays as the original engineering backlog.
+
 Story points are planning estimates (1 = an hour or two, 5 = a few days of evenings), not measurements.
 
 **Labels**

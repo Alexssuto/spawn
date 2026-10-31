@@ -8,11 +8,13 @@ import { useNow } from './hooks/useNow'
 import { useSpawns } from './hooks/useSpawns'
 import { sortViews, viewSpawn } from './lib/spawnView'
 import { parseUrlState, toSearch, type Tab } from './lib/urlState'
+import { groupByVenue } from './lib/venues'
 import { MapView } from './components/MapView'
 import { SpawnCard } from './components/SpawnCard'
 import { SpawnSheet } from './components/SpawnSheet'
 import { CatchOverlay } from './components/CatchOverlay'
 import { DexView } from './components/DexView'
+import { VenueSheet } from './components/VenueSheet'
 import { BrandMark, TypeIcon } from './components/Icons'
 
 // Required by the CC BY 4.0 license of the city's events data.
@@ -34,6 +36,8 @@ export default function App() {
   const [initial] = useState(() => parseUrlState(window.location.search))
   const [tab, setTab] = useState<Tab>(initial.tab)
   const [selectedId, setSelectedId] = useState<string | null>(initial.spawn)
+  // The venue whose list is open. Closing an event opened from it goes back to the list.
+  const [venueKey, setVenueKey] = useState<string | null>(null)
   const [filter, setFilter] = useState<ExperienceType | null>(initial.type)
   const [justCaught, setJustCaught] = useState<Spawn | null>(null)
 
@@ -41,7 +45,9 @@ export default function App() {
     () => sortViews(spawns.map((s) => viewSpawn(s, position, now, has(s.id)))),
     [spawns, position, now, has],
   )
-  const filtered = filter ? views.filter((v) => v.spawn.type === filter) : views
+  const filtered = useMemo(() => (filter ? views.filter((v) => v.spawn.type === filter) : views), [views, filter])
+  const venues = useMemo(() => groupByVenue(filtered), [filtered])
+  const venue = venues.find((g) => g.key === venueKey) ?? null
   const selected = views.find((v) => v.spawn.id === selectedId) ?? null
   const liveCount = views.filter((v) => v.status === 'live' && !v.caught).length
   const catchable = views.filter((v) => v.canCatch).length
@@ -57,8 +63,14 @@ export default function App() {
   }, [tab, filter, urlSpawn])
 
   const openSpawn = (id: string) => {
+    setVenueKey(null)
     setSelectedId(id)
     setTab('map')
+  }
+
+  const openVenue = (key: string) => {
+    setSelectedId(null)
+    setVenueKey(key)
   }
 
   const catchSpawn = () => {
@@ -124,18 +136,24 @@ export default function App() {
         {tab === 'map' && (
           <>
             <MapView
-              views={filtered}
+              venues={venues}
               me={position}
               now={now}
               selectedId={selectedId}
+              selectedVenue={venue?.key ?? null}
               dataAttribution={dataSource.kind === 'api' ? MONTREAL_OPEN_DATA_ATTRIBUTION : undefined}
-              onSelect={setSelectedId}
+              onSelect={(id) => {
+                setVenueKey(null)
+                setSelectedId(id)
+              }}
+              onSelectVenue={openVenue}
               onTeleport={(p) => {
                 setSelectedId(null)
+                setVenueKey(null)
                 teleport(p)
               }}
             />
-            {!selected && (
+            {!selected && !venue && (
               <div className="map-hint" aria-live="polite">
                 {catchable > 0
                   ? `${catchable} within reach — tap one to catch it`
@@ -144,8 +162,12 @@ export default function App() {
                     : 'Walk toward a spawn to catch it'}
               </div>
             )}
-            {selected && (
+            {selected ? (
               <SpawnSheet view={selected} now={now} onClose={() => setSelectedId(null)} onCatch={catchSpawn} />
+            ) : (
+              venue && (
+                <VenueSheet venue={venue} now={now} onClose={() => setVenueKey(null)} onSelect={setSelectedId} />
+              )
             )}
           </>
         )}

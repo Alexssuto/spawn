@@ -212,6 +212,20 @@ Two automated reviews, then fixes, each with a test:
 
 **"How do you test a canvas?"** You don't in jsdom (there's no canvas). The stats and the caption are pure functions with unit tests; the share function is injected into the component, so its tests check behaviour (what's shared, the status message, the error path) without a real canvas; and the rendered image is checked by eye in a real browser. That last step caught a false caption: "Mostly Food" when four types were tied at one catch each.
 
+### Product audit and venue pins (Oct 27)
+
+**The shift:** after applying for internships, the goal became a product people use daily, not more technologies. I asked for a full audit first and measured everything on real data before choosing what to build: [product-audit.md](product-audit.md), then [product-roadmap.md](product-roadmap.md) with P0 to P3.
+
+**"What did the audit find?"** The code was in good shape; the problems were in the data. 290 events this week sat on only 99 points (libraries hold dozens each), so most couldn't be tapped on the map. Most events have no venue name and no times, and 42% need registration. Rarity was flat and demo-mode catches counted.
+
+**"Why venue pins first?"** It was the only P0 that hid most of the content, it needed no decision from anyone, and it could be fixed without new technology or API changes. Measured after: 99 pins whose counts add up to all 290 events.
+
+**"Why not a marker-clustering library?"** Clustering is for density when zoomed out. These events have the *same* coordinates, so a cluster never splits into something tappable on a phone. Grouping by exact point is a ten-line pure function I can test (ADR 0010).
+
+**"How do you choose what goes in a pin?"** The pin looks like its best event: live before upcoming, not yet caught first, rarer first. That ordering is a tested rule in `src/lib/venues.ts`, not something the component decides.
+
+**Concepts to understand:** why rounding to 5 decimals is about 1 m; memoising a derived list (`useMemo`) so the map doesn't regroup on every render; why the sheet keeps the venue open behind an event (state: `venueKey` plus `selectedId`).
+
 ### Technology status (keep this honest)
 
 | Technology | Status |

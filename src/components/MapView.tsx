@@ -6,15 +6,18 @@ import { checkMarkup, typeIconMarkup } from './iconMarkup'
 import type { LatLng } from '../lib/geo'
 import { CATCH_RADIUS, type SpawnView } from '../lib/spawnView'
 import { isEndingSoon } from '../lib/time'
+import type { Venue } from '../lib/venues'
 
 interface Props {
-  views: SpawnView[]
+  venues: Venue[]
   me: LatLng
   now: number
   selectedId: string | null
+  selectedVenue: string | null
   /** Extra attribution line for the data shown, e.g. a license requirement. */
   dataAttribution?: string
   onSelect: (id: string) => void
+  onSelectVenue: (key: string) => void
   onTeleport: (p: LatLng) => void
 }
 
@@ -23,20 +26,22 @@ interface Props {
 // object, so only markers whose look actually changed are touched.
 const iconCache = new Map<string, L.DivIcon>()
 
-function spawnIcon(v: SpawnView, selected: boolean, endingSoon: boolean) {
+/** A pin looks like its venue's best spawn (live, rarity...), with a count when it holds several. */
+function venueIcon(lead: SpawnView, count: number, selected: boolean, endingSoon: boolean) {
   const classes = [
     'pin',
-    `pin-${v.spawn.rarity}`,
-    `pin-${v.status}`,
-    v.caught && 'pin-caught',
-    v.concealed && 'pin-concealed',
+    `pin-${lead.spawn.rarity}`,
+    `pin-${lead.status}`,
+    lead.caught && 'pin-caught',
+    lead.concealed && 'pin-concealed',
     selected && 'pin-selected',
     endingSoon && 'pin-ending',
   ]
     .filter(Boolean)
     .join(' ')
-  const glyph = v.concealed ? '<span class="pin-unknown">?</span>' : typeIconMarkup(v.spawn.type, 18)
-  const html = `<div class="${classes}" aria-hidden="true">${glyph}${v.caught ? `<i class="pin-check">${checkMarkup}</i>` : ''}</div>`
+  const glyph = lead.concealed ? '<span class="pin-unknown">?</span>' : typeIconMarkup(lead.spawn.type, 18)
+  const badge = count > 1 ? `<i class="pin-count">${count}</i>` : lead.caught ? `<i class="pin-check">${checkMarkup}</i>` : ''
+  const html = `<div class="${classes}" aria-hidden="true">${glyph}${badge}</div>`
   let icon = iconCache.get(html)
   if (!icon) {
     icon = L.divIcon({ className: '', html, iconSize: [40, 40], iconAnchor: [20, 20] })
@@ -76,11 +81,23 @@ function FlyToSelected({ target }: { target: LatLng | null }) {
   return null
 }
 
-export function MapView({ views, me, now, selectedId, dataAttribution, onSelect, onTeleport }: Props) {
-  const selected = views.find((v) => v.spawn.id === selectedId)
-  const lat = selected?.spawn.lat
-  const lng = selected?.spawn.lng
-  // Depend on the coordinates (not the view object) so the map only flies when the selection changes.
+export function MapView({
+  venues,
+  me,
+  now,
+  selectedId,
+  selectedVenue,
+  dataAttribution,
+  onSelect,
+  onSelectVenue,
+  onTeleport,
+}: Props) {
+  const focused = venues.find((venue) =>
+    selectedId ? venue.views.some((v) => v.spawn.id === selectedId) : venue.key === selectedVenue,
+  )
+  const lat = focused?.lat
+  const lng = focused?.lng
+  // Depend on the coordinates (not the venue object) so the map only flies when the selection moves.
   const target = useMemo(() => (lat !== undefined && lng !== undefined ? { lat, lng } : null), [lat, lng])
 
   return (
@@ -99,18 +116,24 @@ export function MapView({ views, me, now, selectedId, dataAttribution, onSelect,
         pathOptions={{ color: '#ff7a1a', weight: 1, dashArray: '4 4', fillColor: '#ff7a1a', fillOpacity: 0.06 }}
       />
       <Marker position={[me.lat, me.lng]} icon={meIcon} interactive={false} />
-      {views.map((v) => (
-        <Marker
-          // The key includes `concealed` because Leaflet only reads `title` when a marker is created.
-          key={`${v.spawn.id}:${v.concealed}`}
-          position={[v.spawn.lat, v.spawn.lng]}
-          icon={spawnIcon(v, v.spawn.id === selectedId, isEndingSoon(v.spawn, now))}
-          // Leaflet makes markers keyboard-focusable buttons; the title gives each one a name.
-          title={v.displayTitle}
-          eventHandlers={{ click: () => onSelect(v.spawn.id) }}
-          zIndexOffset={v.spawn.id === selectedId ? 1000 : v.status === 'live' ? 100 : 0}
-        />
-      ))}
+      {venues.map((venue) => {
+        const [lead] = venue.views
+        const count = venue.views.length
+        const isFocused = venue === focused
+        const title = count > 1 ? `${count} events here, including ${lead.displayTitle}` : lead.displayTitle
+        return (
+          <Marker
+            // The key includes the title because Leaflet only reads `title` when a marker is created.
+            key={`${venue.key}:${title}`}
+            position={[venue.lat, venue.lng]}
+            icon={venueIcon(lead, count, isFocused, isEndingSoon(lead.spawn, now))}
+            // Leaflet makes markers keyboard-focusable buttons; the title gives each one a name.
+            title={title}
+            eventHandlers={{ click: () => (count > 1 ? onSelectVenue(venue.key) : onSelect(lead.spawn.id)) }}
+            zIndexOffset={isFocused ? 1000 : lead.status === 'live' ? 100 : 0}
+          />
+        )
+      })}
     </MapContainer>
   )
 }
